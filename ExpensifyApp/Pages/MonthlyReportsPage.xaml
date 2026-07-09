@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpensifyApp.Pages.MonthlyReportsPage"
+             Title="MonthlyReportsPage">
+    
+    <ContentPage.Resources>
+        <Style TargetType="Picker">
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="Margin" Value="10" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*,Auto">
+        
+        <StackLayout Orientation="Horizontal" Grid.Row="0" Spacing="10">
+            <Picker x:Name="monthPicker" Title="Select Month"/>
+            <Picker x:Name="yearPicker" Title="Select Year"/>
+            <Button Text="Load Report" Clicked="OnLoadReportClicked"/>
+        </StackLayout>
+
+       
+        <CollectionView x:Name="reportCollections" Grid.Row="1" Margin="0,20,0,10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="Gray" CornerRadius="8" Padding="10" Margin="5">
+                        <StackLayout>
+                            <Label Text="{Binding Date, StringFormat='Date: {0:dd-MM-yyyy}'}" />
+                            <Label Text="{Binding Category}" />
+                            <Label Text="{Binding Expenses, StringFormat='Amount: ₹{0:F2}'}" />
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+       
+        <StackLayout Grid.Row="2" Orientation="Vertical" Margin="0,10">
+            <Label x:Name="monthlyTotalLabel" FontAttributes="Bold" FontSize="16" IsVisible="False"/>
+            <Button Text="Download Report (PDF)" Clicked="OnDownloadReportClicked" />
+        </StackLayout>
+    </Grid>
+</ContentPage>

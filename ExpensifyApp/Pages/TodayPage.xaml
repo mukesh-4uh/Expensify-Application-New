@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="ExpensifyApp.Pages.TodayPage"
+             xmlns:local="clr-namespace:ExpensifyApp.Pages"
+             Title="Expense Dashboard"
+             BackgroundColor="#F5F7FA"
+             x:Name="thisPage">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="10"
+          Padding="10">
+
+        <!-- Row 0: Date/Week/Month Picker + Filter Button -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Grid ColumnDefinitions="*,25">
+                <Grid>
+                    <DatePicker x:Name="datePicker"
+                                Date="{Binding SelectedDate, Source={x:Reference thisPage}}"
+                                Format="dd MMMM yyyy"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                IsVisible="True"
+                                DateSelected="OnDateChanged"/>
+                    <Picker x:Name="weekPicker" Title="Select Week" FontSize="18" IsVisible="False" SelectedIndexChanged="OnWeekChanged"/>
+                    <Picker x:Name="monthPicker" Title="Select Month" FontSize="18" IsVisible="False" SelectedIndexChanged="OnMonthChanged"/>
+                </Grid>
+                <Button x:Name="filterButton"
+                        Grid.Column="1"
+                        ImageSource="filter_icon.png"
+                        WidthRequest="56"
+                        HeightRequest="56"
+                        CornerRadius="28"
+                        BackgroundColor="Transparent"
+                        Clicked="OnFilterButtonClicked"/>
+            </Grid>
+        </Grid>
+
+        <!-- Row 1: Horizontal Bar Chart -->
+        <Frame Grid.Row="1"
+               BackgroundColor="White"
+               CornerRadius="18"
+               Padding="20"
+               HasShadow="True"
+               HeightRequest="310">
+            <ScrollView>
+                <CollectionView ItemsSource="{Binding ChartItems}"
+                                VerticalOptions="Start">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:CategoryExpenseModel">
+                            <Grid Padding="5" RowDefinitions="Auto,Auto" ColumnDefinitions="*">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding Category}" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="{Binding Amount, StringFormat='₹{0:N0}'}" 
+                                           Grid.Column="1" FontSize="16" HorizontalOptions="End"/>
+                                </Grid>
+                                <BoxView Grid.Row="1"
+                                         HeightRequest="18"
+                                         Margin="0,6,0,0"
+                                         CornerRadius="8"
+                                         HorizontalOptions="Start"
+                                         Color="{Binding BarColor}"
+                                         WidthRequest="{Binding BarWidth}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </Frame>
+
+        <!-- Row 2: Expenses List - NOW EXPANDS TO FILL SPACE -->
+        <CollectionView Grid.Row="2" 
+                        x:Name="expensesList"
+                        ItemsSource="{Binding ExpenseDisplays}"
+                        VerticalOptions="FillAndExpand">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="local:ExpenseDisplay">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Delete"
+                                           BackgroundColor="#FF5252"
+                                           Command="{Binding BindingContext.DeleteExpenseCommand, Source={x:Reference thisPage}}"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Grid Padding="0">
+                            <Frame BackgroundColor="#FAFAFA"
+                                   CornerRadius="18"
+                                   Margin="8"
+                                   Padding="14"
+                                   HasShadow="True">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding Category}" FontAttributes="Bold" FontSize="18"/>
+                                        <Label Text="{Binding SubCategory}" FontSize="15" TextColor="#666"/>
+                                        <Label Text="{Binding Date, StringFormat='{0:dd MMM yyyy}'}" FontSize="13" TextColor="#999"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Expenses, StringFormat='₹{0:N0}'}"
+                                           VerticalOptions="Center"
+                                           FontAttributes="Bold"
+                                           FontSize="22"
+                                           TextColor="#D32F2F"/>
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Row 3: Total + Add Button -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" ColumnSpacing="10">
+            <Label x:Name="bottomTotalLabel" 
+                   Text="Total: ₹0" 
+                   FontSize="20" 
+                   FontAttributes="Bold" 
+                   TextColor="#D32F2F" 
+                   VerticalOptions="Center"/>
+            <ImageButton Source="add_icon.png" 
+                         Grid.Column="1"
+                         CornerRadius="40" 
+                         BackgroundColor="Transparent" 
+                         Clicked="OnAddClicked"/>
+        </Grid>
+    </Grid>
+</ContentPage>

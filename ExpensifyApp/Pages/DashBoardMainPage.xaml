@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:today="clr-namespace:ExpensifyApp.Pages"
+            xmlns:weekly="clr-namespace:ExpensifyApp.Pages"
+            xmlns:monthly="clr-namespace:ExpensifyApp.Pages"
+            x:Class="ExpensifyApp.Pages.DashBoardMainPage">
+
+    <today:TodayPage Title="Today" IconImageSource="today.png" />
+    <weekly:WeeklyPage Title="Weekly" IconImageSource="weekly.png" />
+    <monthly:MonthlyPage Title="Monthly" IconImageSource="monthly.png" />
+
+</TabbedPage>

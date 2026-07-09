@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="ExpensifyApp.Pages.FilterPopup">
+
+    <Frame BackgroundColor="White"
+           Padding="20"
+           CornerRadius="12"
+           WidthRequest="200"
+           HasShadow="True">
+
+        <VerticalStackLayout Spacing="15">
+
+            <Button Text="Date"
+        BackgroundColor="Transparent"
+        BorderColor="#3A9995"
+        BorderWidth="2"
+        CornerRadius="8"
+        TextColor="#3A9995"
+        Command="{Binding DateCommand}" />
+
+
+            <Button Text="Weekly"
+        BackgroundColor="Transparent"
+        BorderColor="#3A9995"
+        BorderWidth="2"
+        CornerRadius="8"
+        TextColor="#3A9995"
+        Command="{Binding WeeklyCommand}" />
+
+            <Button Text="Monthly"
+        BackgroundColor="Transparent"
+        BorderColor="#3A9995"
+        BorderWidth="2"
+        CornerRadius="8"
+        TextColor="#3A9995"
+        Command="{Binding MonthlyCommand}" />
+
+
+
+        </VerticalStackLayout>
+
+    </Frame>
+
+</toolkit:Popup>

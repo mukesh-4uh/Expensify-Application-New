@@ -1,0 +1,102 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpensifyApp.Pages.MenuPage"
+             BackgroundColor="White"
+             Title="Add Expense">
+
+   
+    <ScrollView>
+        <Grid RowDefinitions="Auto,*,Auto" Padding="20,10" RowSpacing="20">
+
+           
+            <Label Text="Select Category"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Grid.Row="0"/>
+
+           
+            <Grid Grid.Row="1"
+                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                  ColumnDefinitions="*,*,*,*"
+                  RowSpacing="15"
+                  ColumnSpacing="10"
+                  HorizontalOptions="Center">
+
+              
+                <ImageButton Source="foods_icon.png"     Clicked="OnCategoryClicked" CommandParameter="Food"       HeightRequest="40"/>
+                <ImageButton Source="educations_icon.png" Clicked="OnCategoryClicked" CommandParameter="Education"  HeightRequest="40" Grid.Column="1"/>
+                <ImageButton Source="travels_icon.png"    Clicked="OnCategoryClicked" CommandParameter="Travel"     HeightRequest="40" Grid.Column="2"/>
+                <ImageButton Source="medicines_icon.png"  Clicked="OnCategoryClicked" CommandParameter="Medicine"   HeightRequest="40" Grid.Column="3"/>
+
+               
+                <Label Text="Food"       HorizontalOptions="Center" Grid.Row="1"/>
+                <Label Text="Education"  HorizontalOptions="Center" Grid.Row="1" Grid.Column="1"/>
+                <Label Text="Travel"     HorizontalOptions="Center" Grid.Row="1" Grid.Column="2"/>
+                <Label Text="Medicines"  HorizontalOptions="Center" Grid.Row="1" Grid.Column="3"/>
+
+                
+                <ImageButton Source="shoppings_icon.png"       Clicked="OnCategoryClicked" CommandParameter="Shopping"      HeightRequest="40" Grid.Row="2"/>
+                <ImageButton Source="rents_icon.png"           Clicked="OnCategoryClicked" CommandParameter="Rent"          HeightRequest="40" Grid.Row="2" Grid.Column="1"/>
+                <ImageButton Source="entertainments_icon.png"  Clicked="OnCategoryClicked" CommandParameter="Entertainment" HeightRequest="40" Grid.Row="2" Grid.Column="2"/>
+                <ImageButton Source="loans_icon.png"           Clicked="OnCategoryClicked" CommandParameter="Loan"          HeightRequest="40" Grid.Row="2" Grid.Column="3"/>
+
+                <Label Text="Shopping"      HorizontalOptions="Center" Grid.Row="3"/>
+                <Label Text="Rent"          HorizontalOptions="Center" Grid.Row="3" Grid.Column="1"/>
+                <Label Text="Entertainment" HorizontalOptions="Center" Grid.Row="3" Grid.Column="2"/>
+                <Label Text="Loan"          HorizontalOptions="Center" Grid.Row="3" Grid.Column="3"/>
+
+              
+                <ImageButton Source="savings_icon.png"   Clicked="OnCategoryClicked" CommandParameter="Savings"    HeightRequest="40" Grid.Row="4"/>
+                <ImageButton Source="grocery_icon.png"   Clicked="OnCategoryClicked" CommandParameter="Groceries"  HeightRequest="40" Grid.Row="4" Grid.Column="1"/>
+                <ImageButton Source="lending_icon.png"   Clicked="OnCategoryClicked" CommandParameter="Lending"    HeightRequest="40" Grid.Row="4" Grid.Column="2"/>
+                <ImageButton Source="others_icon.png"    Clicked="OnCategoryClicked" CommandParameter="Others"     HeightRequest="40" Grid.Row="4" Grid.Column="3"/>
+
+                <Label Text="Savings"  HorizontalOptions="Center" Grid.Row="5"/>
+                <Label Text="Groceries" HorizontalOptions="Center" Grid.Row="5" Grid.Column="1"/>
+                <Label Text="Lending" HorizontalOptions="Center" Grid.Row="5" Grid.Column="2"/>
+                <Label Text="Others" HorizontalOptions="Center" Grid.Row="5" Grid.Column="3"/>
+            </Grid>
+
+           
+            <Border x:Name="ExpenseFormPanel"
+                    Grid.Row="2"
+                    BackgroundColor="#F8F8F8"
+                    Stroke="#CCCCCC"
+                    StrokeThickness="1"
+                    Padding="20"
+                    IsVisible="False">
+
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Add New Expense"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+
+                    <Entry x:Name="categoryEntry"    Placeholder="Category" IsReadOnly="True" BackgroundColor="#EEEEEE"/>
+                    <Entry x:Name="subCategoryEntry" Placeholder="Sub-Category (optional)"/>
+                    <Entry x:Name="expenseEntry"  Placeholder="Amount" Keyboard="Numeric"/>
+                    <DatePicker x:Name="datePicker"/>
+
+                    <Picker x:Name="payModePicker" Title="Payment Mode">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Cash</x:String>
+                                <x:String>UPI</x:String>
+                                <x:String>Credit Card</x:String>
+                                <x:String>Debit Card</x:String>
+                                <x:String>Net Banking</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <Button Text="Save"   BackgroundColor="#00C853" TextColor="White" CornerRadius="10" Clicked="SaveEntry"/>
+                        <Button Text="Cancel" BackgroundColor="#FF1744" TextColor="White" CornerRadius="10" Grid.Column="1" Clicked="HideExpenseForm"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

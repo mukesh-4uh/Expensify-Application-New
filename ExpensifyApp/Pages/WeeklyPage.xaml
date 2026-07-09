@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="ExpensifyApp.Pages.WeeklyPage"
+             BackgroundColor="#F5F7FA">
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Main Content -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="20" Padding="15">
+
+                <Label Text="{Binding WeekRange}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+                <!-- Day-wise Bar Chart -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="10" HasShadow="True">
+                    <micro:ChartView Chart="{Binding WeeklyBarChart}" HeightRequest="220"/>
+                </Frame>
+
+                <!-- Donut Chart -->
+                <Frame BackgroundColor="White" CornerRadius="20" Padding="20" HasShadow="True">
+                    <micro:ChartView Chart="{Binding WeeklyDonutChart}" HeightRequest="300"/>
+                </Frame>
+
+                <!-- Swipe Up Handle -->
+                <BoxView HeightRequest="5" WidthRequest="60" BackgroundColor="#CCCCCC" 
+                         CornerRadius="5" HorizontalOptions="Center" Margin="0,10">
+                    <BoxView.GestureRecognizers>
+                        <SwipeGestureRecognizer Direction="Up" 
+                                                Swiped="OnSwipeUp"/>
+                    </BoxView.GestureRecognizers>
+                </BoxView>
+
+                <Label Text="Swipe up for Weekly Report" 
+                       TextColor="Gray" FontSize="14" HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Sheet Report (Hidden by default) -->
+        <Grid x:Name="ReportPanel" 
+              Grid.Row="1" 
+              BackgroundColor="White" 
+              HeightRequest="0" 
+              TranslationY="1000"
+              IsVisible="False">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Handle -->
+            <BoxView HeightRequest="5" WidthRequest="60" BackgroundColor="#CCCCCC" 
+                     CornerRadius="5" HorizontalOptions="Center" Margin="10">
+                <BoxView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Down" Swiped="OnSwipeDown"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <!-- Report Content -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Spacing="15" Padding="20">
+                    <Label Text="Weekly Report" FontSize="22" FontAttributes="Bold" TextColor="#E65100"/>
+                    <Label Text="{Binding WeeklyTotal, StringFormat='Total: ₹{0:N0}'}" 
+                           FontSize="20" TextColor="#E65100" FontAttributes="Bold"/>
+
+                    <CollectionView ItemsSource="{Binding WeeklyExpenses}" HeightRequest="400">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="#FFF3E0" CornerRadius="10" Margin="5" Padding="10">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Category}" FontAttributes="Bold"/>
+                                            <Label Text="{Binding SubCategory}" TextColor="Gray"/>
+                                            <Label Text="{Binding Date, StringFormat='{0:dd MMM}'}" FontSize="12"/>
+                                        </VerticalStackLayout>
+                                        <Label Text="{Binding Expenses, StringFormat='₹{0}'}" 
+                                               FontAttributes="Bold" TextColor="#D32F2F"/>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Button Text="Download PDF" 
+                            BackgroundColor="#FF9800" TextColor="White" 
+                            CornerRadius="15" HeightRequest="50"
+                            Command="{Binding DownloadWeeklyPdfCommand}"/>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
