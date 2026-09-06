@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ExpensifyApp.Pages"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ExpensifyApp.Pages.ManageRecurringPage"
+             x:Name="thisPage"
+             BackgroundColor="#F4F6FB"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- ===== HEADER BAR ===== -->
+        <Grid Grid.Row="0" Padding="20,48,20,24" RowDefinitions="Auto" ColumnDefinitions="*,Auto" RowSpacing="12" BackgroundColor="#0D8C87">
+            
+            <!-- Title & Subtitle Stack -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                <Label Text="Monthly Commitments" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                <Label Text="Track and manage your ongoing monthly expenses" TextColor="#A8E6E2" FontSize="13"/>
+            </VerticalStackLayout>
+
+            <!-- Add Button -->
+            <Border Grid.Row="0" Grid.Column="1" WidthRequest="56" HeightRequest="56" StrokeThickness="0" BackgroundColor="White" VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                <Label Text="+" TextColor="#0D8C87" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAddTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <!-- ===== SUMMARY STATS CARD ===== -->
+        <Border Grid.Row="1" BackgroundColor="#0D8C87" StrokeThickness="0" Margin="20,12,20,16" Padding="16,20">
+            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+            <Grid ColumnDefinitions="*,Auto,*,Auto,*" VerticalOptions="Center">
+                
+                <!-- Active Column -->
+                <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Center">
+                    <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0" BackgroundColor="#20FFFFFF" HorizontalOptions="Center">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Label Text="📋" TextColor="White" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Active" TextColor="#A8E6E2" FontSize="12" HorizontalOptions="Center"/>
+                    <Label Text="{Binding ActiveCommitmentsCount}" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Divider -->
+                <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="40" BackgroundColor="#40FFFFFF" VerticalOptions="Center"/>
+
+                <!-- Upcoming Column -->
+                <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Center">
+                    <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0" BackgroundColor="#20FFFFFF" HorizontalOptions="Center">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Label Text="📅" TextColor="White" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Upcoming" TextColor="#A8E6E2" FontSize="12" HorizontalOptions="Center"/>
+                    <Label Text="{Binding UpcomingPaymentsText}" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Divider -->
+                <BoxView Grid.Column="3" WidthRequest="1" HeightRequest="40" BackgroundColor="#40FFFFFF" VerticalOptions="Center"/>
+
+                <!-- Monthly Total Column -->
+                <VerticalStackLayout Grid.Column="4" Spacing="6" HorizontalOptions="Center">
+                    <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0" BackgroundColor="#20FFFFFF" HorizontalOptions="Center">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                        <Label Text="👛" TextColor="White" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Monthly total" TextColor="#A8E6E2" FontSize="12" HorizontalOptions="Center"/>
+                    <Label Text="{Binding MonthlyTotalText}" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+            </Grid>
+        </Border>
+
+        <!-- ===== BODY ===== -->
+        <Grid Grid.Row="2" Padding="20,0,20,0" RowDefinitions="*">
+
+            <!-- List View -->
+            <CollectionView x:Name="recurringList" Grid.Row="0" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:RecurringDisplayItem">
+                        <!-- Main Card Border -->
+                        <Border BackgroundColor="White" StrokeThickness="0" Padding="18,16" Margin="0,0,0,16" Opacity="{Binding RowOpacity}">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                            <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="10"/></Border.Shadow>
+                            
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+                                
+                                <!-- ===== HEADER ROW ===== -->
+                                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <!-- Category Icon -->
+                                    <Border WidthRequest="46" HeightRequest="46" BackgroundColor="{Binding IconBg}" VerticalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                        <Label Text="{Binding CategoryEmoji}" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <!-- Info Stack -->
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="{Binding TitleDisplay}" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                        <Label Text="{Binding RepeatSchedule}" FontSize="12" TextColor="#8A94A6"/>
+                                    </VerticalStackLayout>
+                                    <!-- Status Capsule Badge -->
+                                    <Border Grid.Column="2" BackgroundColor="{Binding StatusBgColor}" StrokeThickness="0" Padding="12,6" HeightRequest="28" VerticalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                        <Label Text="{Binding StatusText}" TextColor="{Binding StatusTextColor}" FontSize="11" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="#F0F3F8"/>
+
+                                <!-- ===== AMOUNT & TOGGLE ROW ===== -->
+                                <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="Amount" FontSize="11" TextColor="#8A94A6"/>
+                                        <Label Text="{Binding AmountDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1C2340"/>
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="End" VerticalOptions="Center">
+                                        <Label Text="Auto-add each month" FontSize="11" TextColor="#8A94A6" HorizontalOptions="End"/>
+                                        <HorizontalStackLayout Spacing="8" HorizontalOptions="End" VerticalOptions="Center">
+                                            <Label Text="{Binding AutoAddText}" TextColor="{Binding AutoAddTextColor}" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                                            <Switch IsToggled="{Binding IsActive}" OnColor="#0D8C87" ThumbColor="#FFFFFF" VerticalOptions="Center" Toggled="OnActiveToggled"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="3" HeightRequest="1" BackgroundColor="#F0F3F8"/>
+
+                                <!-- ===== PAYMENT DETAILS ROW ===== -->
+                                <VerticalStackLayout Grid.Row="4" Spacing="8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Next payment" FontSize="13" TextColor="#8A94A6"/>
+                                        <Label Grid.Column="1" Text="{Binding NextPaymentDateStr}" FontSize="13" FontAttributes="Bold" TextColor="#1C2340"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Category" FontSize="13" TextColor="#8A94A6"/>
+                                        <Label Grid.Column="1" Text="{Binding CategoryName}" FontSize="13" FontAttributes="Bold" TextColor="#1C2340"/>
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="5" HeightRequest="1" BackgroundColor="#F0F3F8"/>
+
+                                <!-- ===== BUTTONS ROW ===== -->
+                                <Grid Grid.Row="6" ColumnDefinitions="*,*" ColumnSpacing="12">
+                                    <!-- Edit Button -->
+                                    <Border Grid.Column="0" BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E2E8F0" Padding="8" HeightRequest="40">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                                            <Label Text="✏️" FontSize="12" VerticalOptions="Center"/>
+                                            <Label Text="Edit" TextColor="#0D8C87" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnEditTapped" CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                    <!-- Delete Button -->
+                                    <Border Grid.Column="1" BackgroundColor="#FFF5F5" StrokeThickness="1" Stroke="#FED7D7" Padding="8" HeightRequest="40">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                                            <Label Text="🗑️" FontSize="12" VerticalOptions="Center"/>
+                                            <Label Text="Delete" TextColor="#D32F2F" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnDeleteTapped" CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Empty State -->
+            <VerticalStackLayout x:Name="emptyState" Grid.Row="0" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                <Border BackgroundColor="#E0F2F1" StrokeThickness="0" WidthRequest="80" HeightRequest="80" HorizontalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="40"/></Border.StrokeShape>
+                    <Label Text="🔁" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="No recurring expenses" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                <Label Text="Add recurring items via transaction history swipe actions" FontSize="13" TextColor="#8A94A6" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- Spacer to clear bottom UI area -->
+        <BoxView Grid.Row="3" HeightRequest="16" Color="Transparent"/>
+
+    </Grid>
+</ContentPage>

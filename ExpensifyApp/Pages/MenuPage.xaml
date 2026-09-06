@@ -1,4 +1,4 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ExpensifyApp.Pages.MenuPage"
              BackgroundColor="White"
@@ -82,7 +82,8 @@
                         <Picker.ItemsSource>
                             <x:Array Type="{x:Type x:String}">
                                 <x:String>Cash</x:String>
-                                <x:String>UPI</x:String>
+
+
                                 <x:String>Credit Card</x:String>
                                 <x:String>Debit Card</x:String>
                                 <x:String>Net Banking</x:String>

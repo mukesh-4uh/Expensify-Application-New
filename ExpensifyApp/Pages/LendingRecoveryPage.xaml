@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ExpensifyApp.Pages"
+             x:Class="ExpensifyApp.Pages.LendingRecoveryPage"
+             x:Name="thisPage"
+             BackgroundColor="#F4F6FB"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ===== TOP HEADER ===== -->
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,44,20,20">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,24,24"/>
+            </Border.StrokeShape>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0F9F99" Offset="0.0"/>
+                    <GradientStop Color="#086B67" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+              
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="12,0">
+                    <Label Text="Lending &amp; Recovery" TextColor="White" FontSize="20" FontAttributes="Bold"/>
+                    <Label Text="Keep track of money you've lent" TextColor="#B2F2EE" FontSize="12"/>
+                </VerticalStackLayout>
+
+                <Border Grid.Column="2" StrokeThickness="0" BackgroundColor="#33FFFFFF" Padding="12,8" VerticalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label Text="+ Lend" TextColor="White" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAddLentTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ===== BODY ===== -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,16,20,24" Spacing="18">
+
+                <!-- ===== SIMPLIFIED SUMMARY CARD ===== -->
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="18,16">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                    <Border.Shadow><Shadow Brush="#0D000000" Offset="0,4" Radius="12"/></Border.Shadow>
+                    
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="16" VerticalOptions="Center">
+                        <!-- Total Outstanding -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="OUTSTANDING" FontSize="11" FontAttributes="Bold" TextColor="#8A94A6" CharacterSpacing="1" HorizontalOptions="Center"/>
+                            <Label x:Name="outstandingLabel" Text="₹0" TextColor="#E53935" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            <Label Text="Money To Receive" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        
+                        <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="#F0F3F8" VerticalOptions="Fill"/>
+
+                        <!-- Total Recovered -->
+                        <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="RECOVERED" FontSize="11" FontAttributes="Bold" TextColor="#8A94A6" CharacterSpacing="1" HorizontalOptions="Center"/>
+                            <Label x:Name="receivedLabel" Text="₹0" TextColor="#0D8C87" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            <Label Text="Money Returned" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- ===== SIMPLIFIED FILTER TABS ===== -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                    <!-- Tab: All -->
+                    <Border x:Name="chipAll" Grid.Column="0" StrokeThickness="0" BackgroundColor="#0D8C87" Padding="12,10">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="All"/></Border.GestureRecognizers>
+                        <Label x:Name="lblAll" Text="All Loans" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    </Border>
+
+                    <!-- Tab: Pending -->
+                    <Border x:Name="chipPending" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Pending"/></Border.GestureRecognizers>
+                        <Label x:Name="lblPending" Text="Pending 🟠" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    </Border>
+
+                    <!-- Tab: Recovered -->
+                    <Border x:Name="chipRecovered" Grid.Column="2" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Recovered"/></Border.GestureRecognizers>
+                        <Label x:Name="lblRecovered" Text="Recovered 🟢" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    </Border>
+                </Grid>
+
+                <!-- ===== LIST HEADER ===== -->
+                <Grid ColumnDefinitions="*,Auto" Margin="4,4,0,0">
+                    <Label x:Name="listTitleLabel" Text="Active Loans (0)" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" VerticalOptions="Center"/>
+                </Grid>
+
+                <!-- ===== COLLECTIONVIEW OF CARDS ===== -->
+                <CollectionView x:Name="lendingCollectionView" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Border BackgroundColor="White" StrokeThickness="0" Padding="24" Margin="0,10">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="🤝" FontSize="36" HorizontalOptions="Center"/>
+                                <Label Text="No lending records found" FontSize="15" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="Tap '+ Lend' in top header to log a loan." FontSize="12" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView Threshold="120" Margin="0,0,0,10">
+                                <!-- SWIPE LEFT: Edit & Mark Paid -->
+                                <SwipeView.LeftItems>
+                                    <SwipeItems Mode="Reveal">
+                                        <SwipeItem Text="Edit ✏️" BackgroundColor="#0D8C87" Invoked="OnSwipeEditInvoked" CommandParameter="{Binding .}"/>
+                                        <SwipeItem Text="Mark Paid ✓" BackgroundColor="#2E7D32" Invoked="OnSwipeRecoverInvoked" CommandParameter="{Binding .}"/>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                
+                                <!-- SWIPE RIGHT: Delete -->
+                                <SwipeView.RightItems>
+                                    <SwipeItems Mode="Reveal">
+                                        <SwipeItem Text="Delete 🗑" BackgroundColor="#D32F2F" Invoked="OnSwipeDeleteInvoked" CommandParameter="{Binding .}"/>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <!-- Card Border Grid -->
+                                <Border BackgroundColor="White" StrokeThickness="0" Padding="16,14">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                                    <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                                    
+                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                        
+                                        <!-- Row 0: Borrower Name, Amount & Status Pill -->
+                                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                                <Border WidthRequest="36" HeightRequest="36" BackgroundColor="#E0F2F1" StrokeThickness="0" VerticalOptions="Center">
+                                                    <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                                    <Label Text="👤" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                </Border>
+                                                <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                                    <Label Text="{Binding PersonName}" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                                    <Label Text="{Binding DateGivenStr}" FontSize="11" TextColor="#8A94A6"/>
+                                                </VerticalStackLayout>
+                                            </HorizontalStackLayout>
+                                            
+                                            <Label Grid.Column="1" Text="{Binding AmountDisplay}" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" VerticalOptions="Center"/>
+                                            
+                                            <Border Grid.Column="2" BackgroundColor="{Binding StatusBg}" StrokeThickness="0" Padding="8,4" VerticalOptions="Center">
+                                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                                <Label Text="{Binding StatusText}" FontSize="11" FontAttributes="Bold" TextColor="{Binding StatusColor}"/>
+                                            </Border>
+                                        </Grid>
+
+                                        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="#F4F6FB"/>
+
+                                        <!-- Row 2: Due Date, Notes & Actions -->
+                                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                                            <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                                <Label Text="{Binding DueDateStr, StringFormat='Expected Return: {0}'}" FontSize="12" FontAttributes="Bold" TextColor="{Binding DueColor}"/>
+                                                <Label Text="{Binding Notes}" FontSize="11" TextColor="#8A94A6" IsVisible="{Binding HasNotes}"/>
+                                            </VerticalStackLayout>
+
+                                            <!-- Quick Action Button -->
+                                            <Button Grid.Column="1" Text="Mark Paid ✓" HeightRequest="32" FontSize="11" FontAttributes="Bold" BackgroundColor="#E8F5E9" TextColor="#2E7D32" CornerRadius="8" Padding="10,0" IsVisible="{Binding IsNotActiveCard, Converter={StaticResource InverseBoolConverter}}" Clicked="OnMarkPaidClicked" CommandParameter="{Binding .}"/>
+                                        </Grid>
+
+                                    </Grid>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Spacer -->
+        <BoxView Grid.Row="2" HeightRequest="16" Color="Transparent"/>
+
+    </Grid>
+</ContentPage>

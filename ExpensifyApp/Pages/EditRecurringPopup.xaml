@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpensifyApp.Pages.EditRecurringPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Border Padding="0" StrokeThickness="0" BackgroundColor="#F5F7FA"
+            WidthRequest="320">
+        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+        <Border.Shadow><Shadow Brush="#40000000" Offset="0,8" Radius="24"/></Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="0">
+
+            <!-- ===== HEADER ===== -->
+            <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto,*">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#0D8C87" Offset="0.0"/>
+                        <GradientStop Color="#0A7A75" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Label Text="🔁" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Edit Recurring" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                    <Label x:Name="categoryLabel" Text="" TextColor="#A8E6E2" FontSize="12"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== FORM FIELDS ===== -->
+            <VerticalStackLayout Grid.Row="1" Padding="20,20,20,8" Spacing="16">
+
+                <!-- Amount Field -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="AMOUNT" FontSize="11" TextColor="#8A94A6" FontAttributes="Bold"
+                           CharacterSpacing="1"/>
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB"
+                            Padding="4,0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="₹" FontSize="20" TextColor="#0D8C87" FontAttributes="Bold"
+                                   VerticalOptions="Center" Margin="10,0,4,0"/>
+                            <Entry x:Name="amountEntry" Grid.Column="1" Keyboard="Numeric"
+                                   Placeholder="Enter amount" PlaceholderColor="#C8CDD6"
+                                   FontSize="18" TextColor="#1C2340" BackgroundColor="Transparent"
+                                   VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Recurring Day Field -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="RECURRING DAY OF MONTH" FontSize="11" TextColor="#8A94A6" FontAttributes="Bold"
+                           CharacterSpacing="1"/>
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB"
+                            Padding="12,0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="📅" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                            <Entry x:Name="dayEntry" Grid.Column="1" Keyboard="Numeric"
+                                   Placeholder="Enter day of month (1-31)" PlaceholderColor="#C8CDD6"
+                                   FontSize="15" TextColor="#1C2340" BackgroundColor="Transparent"
+                                   HeightRequest="44" VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!-- ===== ERROR LABEL ===== -->
+            <Label x:Name="errorLabel" Grid.Row="2" IsVisible="False"
+                   Text="" TextColor="#E53935" FontSize="12" FontAttributes="Bold"
+                   Padding="20,0,20,8" HorizontalTextAlignment="Center"/>
+
+            <!-- ===== BUTTONS ===== -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" Padding="20,8,20,20" ColumnSpacing="12">
+                <Button Text="Cancel" BackgroundColor="#F0F3F8" TextColor="#8A94A6"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnCancelClicked"/>
+                <Button Grid.Column="1" Text="Save ✓" BackgroundColor="#0D8C87" TextColor="White"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnSaveClicked"/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>

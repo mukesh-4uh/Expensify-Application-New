@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpensifyApp.Pages.DepositGoalPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Border Padding="0" StrokeThickness="0" BackgroundColor="#F8FAFC" WidthRequest="340">
+        <Border.StrokeShape><RoundRectangle CornerRadius="22"/></Border.StrokeShape>
+        <Border.Shadow><Shadow Brush="#50000000" Offset="0,10" Radius="24"/></Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="0">
+
+            <!-- ===== HEADER ===== -->
+            <Grid Grid.Row="0" Padding="20,18" ColumnDefinitions="Auto,*">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#0F9F99" Offset="0.0"/>
+                        <GradientStop Color="#086B67" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Border x:Name="headerIconBorder" WidthRequest="44" HeightRequest="44" BackgroundColor="#33FFFFFF" StrokeThickness="0" VerticalOptions="Center">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Label x:Name="headerIconLabel" Text="📥" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="12,0,0,0">
+                    <Label x:Name="headerTitleLabel" Text="Deposit to Goal" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                    <Label x:Name="headerGoalNameLabel" Text="Goal Name" TextColor="#B2F2EE" FontSize="12"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== BODY ===== -->
+            <VerticalStackLayout Grid.Row="1" Padding="20,16" Spacing="16">
+
+                <!-- Goal Summary Status -->
+                <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E2E8F0" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="4">
+                        <Label Text="Current Saved" FontSize="11" TextColor="#8A94A6"/>
+                        <Label Grid.Column="1" Text="Target Goal" FontSize="11" TextColor="#8A94A6" HorizontalOptions="End"/>
+                        <Label Grid.Row="1" x:Name="currentAmountLabel" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#0D8C87"/>
+                        <Label Grid.Row="1" Grid.Column="1" x:Name="targetAmountLabel" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#1E293B" HorizontalOptions="End"/>
+                    </Grid>
+                </Border>
+
+                <!-- Quick Preset Chips -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="QUICK SELECT AMOUNT" FontSize="11" TextColor="#8A94A6" FontAttributes="Bold" CharacterSpacing="1"/>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                        <Border BackgroundColor="#E0F2F1" StrokeThickness="0" Padding="4,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQuickPresetTapped" CommandParameter="500"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+₹500" FontSize="12" FontAttributes="Bold" TextColor="#0D8C87" HorizontalOptions="Center"/>
+                        </Border>
+
+                        <Border Grid.Column="1" BackgroundColor="#E0F2F1" StrokeThickness="0" Padding="4,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQuickPresetTapped" CommandParameter="1000"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+₹1k" FontSize="12" FontAttributes="Bold" TextColor="#0D8C87" HorizontalOptions="Center"/>
+                        </Border>
+
+                        <Border Grid.Column="2" BackgroundColor="#E0F2F1" StrokeThickness="0" Padding="4,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQuickPresetTapped" CommandParameter="5000"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+₹5k" FontSize="12" FontAttributes="Bold" TextColor="#0D8C87" HorizontalOptions="Center"/>
+                        </Border>
+
+                        <Border Grid.Column="3" BackgroundColor="#E0F2F1" StrokeThickness="0" Padding="4,8">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQuickPresetTapped" CommandParameter="10000"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="+₹10k" FontSize="12" FontAttributes="Bold" TextColor="#0D8C87" HorizontalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Amount Entry -->
+                <VerticalStackLayout Spacing="6">
+                    <Label x:Name="inputFieldHeader" Text="ENTER AMOUNT" FontSize="11" TextColor="#8A94A6" FontAttributes="Bold" CharacterSpacing="1"/>
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E2E8F0" Padding="12,0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="₹" FontSize="18" TextColor="#0D8C87" FontAttributes="Bold" VerticalOptions="Center" Margin="2,0,8,0"/>
+                            <Entry x:Name="amountEntry" Grid.Column="1" Keyboard="Numeric"
+                                   Placeholder="Enter amount" PlaceholderColor="#94A3B8"
+                                   FontSize="16" TextColor="#1E293B" BackgroundColor="Transparent"
+                                   HeightRequest="46" VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!-- ===== ERROR MSG ===== -->
+            <Label x:Name="errorLabel" Grid.Row="2" IsVisible="False"
+                   Text="" TextColor="#E53935" FontSize="12" FontAttributes="Bold"
+                   Padding="20,0,20,8" HorizontalTextAlignment="Center"/>
+
+            <!-- ===== BUTTONS ===== -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" Padding="20,4,20,20" ColumnSpacing="12">
+                <Button Text="Cancel" BackgroundColor="#F1F5F9" TextColor="#64748B"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnCancelClicked"/>
+                <Button Grid.Column="1" x:Name="actionButton" Text="Deposit 📥" BackgroundColor="#0D8C87" TextColor="White"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnActionClicked"/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>

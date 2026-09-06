@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ExpensifyApp.Pages"
+             x:Class="ExpensifyApp.Pages.ProfilePage"
+             x:Name="thisPage"
+             BackgroundColor="#F4F6FB"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Scrollable Body -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Header Profile Card -->
+                <Grid BackgroundColor="#10CFC9" Padding="20,48,20,30" RowDefinitions="Auto,Auto">
+                    <!-- Title -->
+                    <Label Grid.Row="0" Text="My Profile"
+                           TextColor="White" FontSize="22" FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+
+                    <!-- Avatar + Info -->
+                    <VerticalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center" Margin="0,20,0,0">
+                        <Border WidthRequest="90" HeightRequest="90" StrokeThickness="3" Stroke="White" HorizontalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="45"/></Border.StrokeShape>
+                            <Label Text="👤" FontSize="44" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                            <Label x:Name="profileNameLabel" Text="Premium Member" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center"/>
+                            <Label Text="✏️" FontSize="16" VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEditNameTapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        <Label Text="Premium Member" TextColor="#D1F8F6" FontSize="13" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Padding="20" Spacing="20">
+
+                    <!-- Stats Card -->
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <Grid ColumnDefinitions="*,*">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                                <Label Text="TOTAL TRANSACTIONS" TextColor="#8A94A6" FontSize="10" CharacterSpacing="0.5"/>
+                                <Label x:Name="totalTransactionsLabel" Text="0" TextColor="#1C2E35" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="4">
+                                <Label Text="TOTAL SPENT" TextColor="#8A94A6" FontSize="10" CharacterSpacing="0.5"/>
+                                <Label x:Name="totalSpentLabel" Text="₹0" TextColor="#10CFC9" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <Label Text="Account Actions" FontSize="16" FontAttributes="Bold" TextColor="#1C2E35"/>
+
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="0">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout Spacing="0">
+                            
+                            <!-- Change Dashboard Mode -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="⚙️" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Change Dashboard Mode" FontSize="14" TextColor="#1C2E35"/>
+                                    <Label x:Name="dashboardModeSubtitle" Text="Current: Monthly budget" FontSize="11" TextColor="#8A94A6"/>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnChangeDashboardModeTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Edit Monthly Income -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="💵" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Edit Monthly Income" FontSize="14" TextColor="#1C2E35"/>
+                                    <Label x:Name="incomeSubtitle" Text="Current: ₹0" FontSize="11" TextColor="#8A94A6"/>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEditIncomeTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Savings Target Planner -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="💰" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Savings Target Planner" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSavingsPlannerTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Lending & Recovery Tracker -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="🤝" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Lending &amp; Recovery Tracker" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnLendingTrackerTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Set Budget -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="🎯" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Set Monthly Budget" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSetBudgetTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+
+
+                            <!-- Manage Recurring -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="🔁" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Manage Recurring Expenses" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnManageRecurringTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Export PDF -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="📄" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Export Expenses as PDF" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnExportTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Clear Database -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="🗑️" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Reset/Clear Database" FontSize="14" TextColor="#E53935" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnClearTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
+                            <!-- Log Out -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="🚪" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <Label Grid.Column="1" Text="Log Out" FontSize="14" TextColor="#1C2E35" VerticalOptions="Center"/>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Credits -->
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center" Margin="0,20,0,0">
+                        <Label Text="Version 1.0.0" FontSize="12" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                        <Label Text="Designed &amp; Developed by Mukesh Muthazhagan" FontSize="12" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ===== BOTTOM NAV BAR ===== -->
+        <Grid Grid.Row="1" BackgroundColor="White" RowDefinitions="Auto,Auto">
+            <BoxView Grid.Row="0" HeightRequest="1" BackgroundColor="#E5E7EB"/>
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Padding="0,10,0,16" BackgroundColor="White">
+                <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="⊞" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="Dashboard" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnDashboardTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="🕐" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="History" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnHistoryTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="📊" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="Stats" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnStatsTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="👤" FontSize="22" HorizontalOptions="Center" TextColor="#0D8C87"/>
+                    <Label Text="Profile" FontSize="10" TextColor="#0D8C87" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+            <Border Grid.Row="0" Grid.RowSpan="2" BackgroundColor="#0D8C87" StrokeThickness="0" WidthRequest="60" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,-30,0,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="30"/></Border.StrokeShape>
+                <Border.Shadow><Shadow Brush="#800D8C87" Offset="0,4" Radius="16"/></Border.Shadow>
+                <Button Text="+" FontSize="32" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" Clicked="addButton_Clicked" />
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

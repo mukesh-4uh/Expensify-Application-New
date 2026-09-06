@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ExpensifyApp.Pages"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="ExpensifyApp.Pages.StatsPage"
+             x:Name="thisPage"
+             BackgroundColor="#F5F7FA"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
+                
+                <!-- ===== HEADER ===== -->
+                <VerticalStackLayout BackgroundColor="#10CFC9" Padding="20,48,20,24" Spacing="16">
+                    <Label Text="Statistics" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                    
+                    <!-- Period Segmented Control -->
+                    <Border BackgroundColor="#0D9C96" StrokeThickness="0" Padding="4">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,*,*">
+                            <Border x:Name="pillDaily" Grid.Column="0" BackgroundColor="#0D9C96" StrokeThickness="0" Padding="0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Label x:Name="lblDaily" Text="Daily" TextColor="White" FontSize="13" HorizontalOptions="Center" FontAttributes="Bold"/>
+                                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPillDaily"/></Border.GestureRecognizers>
+                            </Border>
+                            <Border x:Name="pillWeekly" Grid.Column="1" BackgroundColor="#0D9C96" StrokeThickness="0" Padding="0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Label x:Name="lblWeekly" Text="Weekly" TextColor="White" FontSize="13" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPillWeekly"/></Border.GestureRecognizers>
+                            </Border>
+                            <Border x:Name="pillMonthly" Grid.Column="2" BackgroundColor="White" StrokeThickness="0" Padding="0,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                <Label x:Name="lblMonthly" Text="Monthly" TextColor="#10CFC9" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPillMonthly"/></Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Date Selectors -->
+                    <Grid HeightRequest="44">
+                        <Border x:Name="dailySelector" BackgroundColor="White" StrokeThickness="0" IsVisible="False">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <DatePicker x:Name="dailyDatePicker" TextColor="#1C2340" BackgroundColor="Transparent" HorizontalOptions="Fill" Margin="12,0" DateSelected="OnDateSelected"/>
+                        </Border>
+                        <Border x:Name="weeklySelector" BackgroundColor="White" StrokeThickness="0" IsVisible="False">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Picker x:Name="weeklyPicker" TextColor="#1C2340" BackgroundColor="Transparent" Title="Select Week" HorizontalOptions="Fill" Margin="12,0" SelectedIndexChanged="OnPeriodChanged"/>
+                        </Border>
+                        <Border x:Name="monthlySelector" BackgroundColor="White" StrokeThickness="0" IsVisible="True">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <Picker x:Name="monthlyPicker" TextColor="#1C2340" BackgroundColor="Transparent" Title="Select Month" HorizontalOptions="Fill" Margin="12,0" SelectedIndexChanged="OnPeriodChanged"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- ===== SUMMARY CARDS ===== -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8" Padding="20,16,20,0">
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="12">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label Text="Income" FontSize="11" TextColor="#8A94A6"/>
+                            <Label x:Name="summaryIncome" Text="₹0" FontSize="14" FontAttributes="Bold" TextColor="#1C2340" Margin="0,4,0,0"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="White" StrokeThickness="0" Padding="12">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label Text="Spent" FontSize="11" TextColor="#8A94A6"/>
+                            <Label x:Name="summarySpent" Text="₹0" FontSize="14" FontAttributes="Bold" TextColor="#E53935" Margin="0,4,0,0"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" BackgroundColor="White" StrokeThickness="0" Padding="12">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label Text="Net" FontSize="11" TextColor="#8A94A6"/>
+                            <Label x:Name="summaryNet" Text="₹0" FontSize="14" FontAttributes="Bold" TextColor="#10CFC9" Margin="0,4,0,0"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <VerticalStackLayout Padding="20,16" Spacing="16">
+
+                    <!-- COMPARISON CARD -->
+                    <Border BackgroundColor="#E8F8F7" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Border WidthRequest="36" HeightRequest="36" BackgroundColor="White" StrokeThickness="0" VerticalOptions="Center" Margin="0,0,12,0">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                                <Label x:Name="comparisonIcon" Text="↓" FontSize="18" FontAttributes="Bold" TextColor="#10CFC9" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="Compared with last period" FontSize="12" TextColor="#8A94A6"/>
+                                <Label x:Name="comparisonText" Text="You spent ₹0 less than last period" FontSize="14" FontAttributes="Bold" TextColor="#1C2340"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- BAR CHART -->
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label x:Name="barChartTitle" Text="Spending Trend" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" Margin="0,0,0,16"/>
+                            <Grid x:Name="barChartGrid" HeightRequest="120" ColumnSpacing="8"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- DONUT CHART (Hidden on Daily) -->
+                    <Border x:Name="donutChartContainer" BackgroundColor="White" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label Text="Category Distribution" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" Margin="0,0,0,16"/>
+                            <microcharts:ChartView x:Name="donutChart" HeightRequest="200"/>
+                            
+                            <!-- Category Ranking List -->
+                            <VerticalStackLayout x:Name="categoryRankingList" Spacing="12" Margin="0,16,0,0">
+                                <!-- Populated dynamically -->
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- SPENDING INSIGHTS -->
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="Spending Insights" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" Margin="0,0,0,4"/>
+                            
+                            <Grid ColumnDefinitions="*,*">
+                                <VerticalStackLayout>
+                                    <Label Text="Top Category" FontSize="12" TextColor="#8A94A6"/>
+                                    <Label x:Name="insightTopCategory" Text="N/A" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1">
+                                    <Label Text="Biggest Expense" FontSize="12" TextColor="#8A94A6"/>
+                                    <Label x:Name="insightBiggest" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                            
+                            <BoxView HeightRequest="1" BackgroundColor="#F3F4F6"/>
+                            
+                            <Grid ColumnDefinitions="*,*">
+                                <VerticalStackLayout>
+                                    <Label Text="Most Expensive Day" FontSize="12" TextColor="#8A94A6"/>
+                                    <Label x:Name="insightMaxDay" Text="N/A" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1">
+                                    <Label Text="Daily Average" FontSize="12" TextColor="#8A94A6"/>
+                                    <Label x:Name="insightAvg" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- CALENDAR HEATMAP (Monthly Only) -->
+                    <Border x:Name="heatmapContainer" BackgroundColor="White" StrokeThickness="0" Padding="16" IsVisible="True">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <VerticalStackLayout>
+                            <Label Text="Spending Activity" FontSize="16" FontAttributes="Bold" TextColor="#1C2340" Margin="0,0,0,16"/>
+                            <FlexLayout x:Name="heatmapGrid" Wrap="Wrap" JustifyContent="Center" AlignItems="Center" AlignContent="Center"/>
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="12" Margin="0,12,0,0">
+                                <HorizontalStackLayout Spacing="4">
+                                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#E5E7EB" VerticalOptions="Center"/>
+                                    <Label Text="Zero" FontSize="10" TextColor="#8A94A6"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="4">
+                                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#4CAF50" VerticalOptions="Center"/>
+                                    <Label Text="Low" FontSize="10" TextColor="#8A94A6"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="4">
+                                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#FFC107" VerticalOptions="Center"/>
+                                    <Label Text="Med" FontSize="10" TextColor="#8A94A6"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="4">
+                                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#F44336" VerticalOptions="Center"/>
+                                    <Label Text="High" FontSize="10" TextColor="#8A94A6"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                    
+                    <BoxView HeightRequest="40" BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ===== BOTTOM NAV BAR ===== -->
+        <Grid Grid.Row="1" BackgroundColor="White" RowDefinitions="Auto,Auto">
+            <BoxView Grid.Row="0" HeightRequest="1" BackgroundColor="#E5E7EB"/>
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Padding="0,10,0,16" BackgroundColor="White">
+                <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="⊞" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="Dashboard" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnDashboardTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="🕐" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="History" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnHistoryTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="📊" FontSize="22" HorizontalOptions="Center" TextColor="#0D8C87"/>
+                    <Label Text="Stats" FontSize="10" TextColor="#0D8C87" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                    <Label Text="👤" FontSize="22" HorizontalOptions="Center" TextColor="#8A94A6"/>
+                    <Label Text="Profile" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Tapped="OnProfileTapped"/></VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+            </Grid>
+            <Border Grid.Row="0" Grid.RowSpan="2" BackgroundColor="#0D8C87" StrokeThickness="0" WidthRequest="60" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,-30,0,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="30"/></Border.StrokeShape>
+                <Border.Shadow><Shadow Brush="#800D8C87" Offset="0,4" Radius="16"/></Border.Shadow>
+                <Button Text="+" FontSize="32" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" Clicked="addButton_Clicked" />
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

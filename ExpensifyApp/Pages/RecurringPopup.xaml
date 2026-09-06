@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpensifyApp.Pages.RecurringPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Border Padding="0" StrokeThickness="0" BackgroundColor="#F5F7FA"
+            WidthRequest="330">
+        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+        <Border.Shadow><Shadow Brush="#40000000" Offset="0,8" Radius="24"/></Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="0">
+
+            <!-- ===== HEADER ===== -->
+            <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto,*">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF9800" Offset="0.0"/>
+                        <GradientStop Color="#F57C00" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Label Text="🔁" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Set Recurring" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                    <Label Text="Auto-repeat this expense monthly" TextColor="#FFE0B2" FontSize="12"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== EXPENSE INFO ===== -->
+            <Border Grid.Row="1" BackgroundColor="#FFF8E1" StrokeThickness="0"
+                    Padding="14" Margin="20,16,20,0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Text="📂" FontSize="18" VerticalOptions="Center" Margin="0,0,10,0"/>
+                    <Label x:Name="infoLabel" Grid.Column="1" Text="" FontSize="14"
+                           FontAttributes="Bold" TextColor="#1C2340" VerticalOptions="Center"/>
+                    <Label x:Name="amountLabel" Grid.Column="2" Text="" FontSize="16"
+                           FontAttributes="Bold" TextColor="#F57C00" VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- ===== OPTIONS ===== -->
+            <VerticalStackLayout Grid.Row="2" Padding="20,16,20,8" Spacing="10">
+
+                <Label Text="REPEAT SCHEDULE" FontSize="11" TextColor="#8A94A6"
+                       FontAttributes="Bold" CharacterSpacing="1" Margin="0,0,0,4"/>
+
+                <!-- Option 1: Same Date -->
+                <Border x:Name="optionSameDate" BackgroundColor="#E0F2F1" StrokeThickness="2"
+                        Stroke="#0D8C87" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <!-- Radio indicator -->
+                        <Border WidthRequest="24" HeightRequest="24" StrokeThickness="2"
+                                Stroke="#0D8C87" BackgroundColor="White" Margin="0,0,12,0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <BoxView x:Name="dotSame" Color="#0D8C87" CornerRadius="6"
+                                     WidthRequest="12" HeightRequest="12"
+                                     HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Same date every month" FontSize="14"
+                                   FontAttributes="Bold" TextColor="#1C2340"/>
+                            <Label x:Name="sameDateLabel" Text="" FontSize="12" TextColor="#0D8C87"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSameDateTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Option 2: Custom Date -->
+                <Border x:Name="optionCustomDate" BackgroundColor="White" StrokeThickness="1"
+                        Stroke="#E5E7EB" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <!-- Radio indicator -->
+                        <Border WidthRequest="24" HeightRequest="24" StrokeThickness="2"
+                                Stroke="#C8CDD6" BackgroundColor="White" Margin="0,0,12,0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                            <BoxView x:Name="dotCustom" Color="Transparent" CornerRadius="6"
+                                     WidthRequest="12" HeightRequest="12"
+                                     HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Choose a custom day" FontSize="14"
+                                   FontAttributes="Bold" TextColor="#1C2340"/>
+                            <Label Text="Select which day of the month" FontSize="12"
+                                   TextColor="#8A94A6"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCustomDateTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Custom Day Picker (hidden by default) -->
+                <Border x:Name="customDaySection" IsVisible="False" BackgroundColor="White"
+                        StrokeThickness="1" Stroke="#E5E7EB" Padding="12,8">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="📅" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Picker x:Name="dayPicker" Grid.Column="1" Title="Select Day"
+                                FontSize="15" TextColor="#1C2340"
+                                TitleColor="#8A94A6"/>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- ===== BUTTONS ===== -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" Padding="20,8,20,20" ColumnSpacing="12">
+                <Button Text="Cancel" BackgroundColor="#F0F3F8" TextColor="#8A94A6"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnCancelClicked"/>
+                <Button Grid.Column="1" Text="Confirm ✓" BackgroundColor="#FF9800" TextColor="White"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnConfirmClicked"/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpensifyApp.Pages.ChangeStrategyPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Border Padding="0" StrokeThickness="0" BackgroundColor="#F5F7FA" WidthRequest="340">
+        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+        <Border.Shadow><Shadow Brush="#40000000" Offset="0,8" Radius="24"/></Border.Shadow>
+
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="0" HeightRequest="560">
+
+            <!-- ===== HEADER ===== -->
+            <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto,*">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#0D8C87" Offset="0.0"/>
+                        <GradientStop Color="#0A7A75" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Label Text="⚙️" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Savings Strategy" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                    <Label Text="Select or customize allocation rules" TextColor="#A8E6E2" FontSize="12"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== BODY ===== -->
+            <ScrollView Grid.Row="1" Padding="16,12">
+                <VerticalStackLayout Spacing="16">
+                    
+                    <Label Text="Choose Preset Strategy" FontSize="14" FontAttributes="Bold" TextColor="#1C2340"/>
+                    
+                    <!-- Presets Grid/Stack -->
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="8" ColumnSpacing="8">
+                        <Border x:Name="preset1Card" Grid.Row="0" Grid.Column="0" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="50/30/20"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="50/30/20 Rule" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="30% Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        
+                        <Border x:Name="preset2Card" Grid.Row="0" Grid.Column="1" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="60/20/20"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="60/20/20 Rule" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="20% Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border x:Name="preset3Card" Grid.Row="1" Grid.Column="0" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="70/20/10"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="70/20/10 Rule" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="20% Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border x:Name="preset4Card" Grid.Row="1" Grid.Column="1" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="Aggressive"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Aggressive Saver" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="40% Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border x:Name="preset5Card" Grid.Row="2" Grid.Column="0" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="Student"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Student Plan" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="25% Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border x:Name="preset6Card" Grid.Row="2" Grid.Column="1" StrokeThickness="1" Stroke="#E5E7EB" Padding="8" BackgroundColor="White">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnPresetSelect" CommandParameter="Custom"/></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Custom Plan" FontSize="12" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                <Label Text="Adjust Sliders" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Sliders View (shown for Custom, disabled/read-only or enabled based on mode) -->
+                    <VerticalStackLayout x:Name="slidersLayout" Spacing="12" Margin="0,10,0,0">
+                        <Label Text="Configure Percentages" FontSize="14" FontAttributes="Bold" TextColor="#1C2340"/>
+                        
+                        <!-- Commitments Slider -->
+                        <VerticalStackLayout Spacing="2">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Commitments (Needs)" FontSize="12" TextColor="#8A94A6"/>
+                                <Label x:Name="commitValLabel" Grid.Column="1" Text="50%" FontSize="12" FontAttributes="Bold" TextColor="#1C2340"/>
+                            </Grid>
+                            <Slider x:Name="commitSlider" Minimum="0" Maximum="100" ValueChanged="OnSliderValueChanged"/>
+                        </VerticalStackLayout>
+
+                        <!-- Savings Slider -->
+                        <VerticalStackLayout Spacing="2">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Savings (Wealth)" FontSize="12" TextColor="#8A94A6"/>
+                                <Label x:Name="savingsValLabel" Grid.Column="1" Text="30%" FontSize="12" FontAttributes="Bold" TextColor="#1C2340"/>
+                            </Grid>
+                            <Slider x:Name="savingsSlider" Minimum="0" Maximum="100" ValueChanged="OnSliderValueChanged"/>
+                        </VerticalStackLayout>
+
+                        <!-- Expenses Slider -->
+                        <VerticalStackLayout Spacing="2">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Expenses (Wants)" FontSize="12" TextColor="#8A94A6"/>
+                                <Label x:Name="expensesValLabel" Grid.Column="1" Text="20%" FontSize="12" FontAttributes="Bold" TextColor="#1C2340"/>
+                            </Grid>
+                            <Slider x:Name="expensesSlider" Minimum="0" Maximum="100" ValueChanged="OnSliderValueChanged"/>
+                        </VerticalStackLayout>
+
+                        <!-- Total Status -->
+                        <Border x:Name="statusBorder" Padding="10,6" BackgroundColor="#E8F5E9" StrokeThickness="0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                            <Label x:Name="statusTextLabel" Text="Total: 100% (Valid)" TextColor="#2E7D32" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- ===== ACTIONS ===== -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" Padding="16,8,16,16" ColumnSpacing="12">
+                <Button Text="Cancel" BackgroundColor="#F0F3F8" TextColor="#8A94A6" FontAttributes="Bold" CornerRadius="12" HeightRequest="44" Clicked="OnCancelClicked"/>
+                <Button x:Name="saveBtn" Grid.Column="1" Text="Apply Strategy" BackgroundColor="#0D8C87" TextColor="White" FontAttributes="Bold" CornerRadius="12" HeightRequest="44" Clicked="OnSaveClicked"/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>

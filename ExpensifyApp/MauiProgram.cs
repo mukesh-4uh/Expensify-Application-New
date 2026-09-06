@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using ExpensifyApp.DataBase;
 using Microcharts.Maui;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,16 @@ namespace ExpensifyApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-           
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+            {
+#if ANDROID
+                h.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+#elif IOS || MACCATALYST
+                h.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+#elif WINDOWS
+                h.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
+#endif
+            });
 
 #if DEBUG
             builder.Logging.AddDebug();

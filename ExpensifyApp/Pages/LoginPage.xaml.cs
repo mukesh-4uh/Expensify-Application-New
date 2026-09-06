@@ -4,6 +4,7 @@ using ExpensifyApp.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Plugin.Fingerprint;
 using Plugin.Fingerprint.Abstractions;
+using Microsoft.Maui.Graphics;
 
 
 namespace ExpensifyApp.Pages;
@@ -25,8 +26,14 @@ public partial class LoginPage : ACSBasePage
         try
         {
             base.OnPageAppearing();
-            await Task.Delay(1000);
+            
+            // Request both folder and camera permissions immediately
             var result = await CheckAndRequestFolderPermission();
+            try
+            {
+                await PermissionHelper.CheckAndRequestCameraPermission();
+            }
+            catch { }
 
             if (result != PermissionStatus.Granted)
             {
@@ -37,6 +44,31 @@ public partial class LoginPage : ACSBasePage
                 return;
             }
             await AppLoadActivityHelper.DoAppInitWork();
+
+           
+            bool biometricAvailable = await CrossFingerprint.Current.IsAvailableAsync(false);
+            if (!biometricAvailable)
+            {               
+                fingerPrintButton.IsVisible = false;
+                dividerGrid.IsVisible = false;
+        
+                screenLockButton.BackgroundColor = Color.FromArgb("#10CFC9");
+                screenLockButton.TextColor = Colors.White;
+                screenLockButton.BorderWidth = 0;
+                screenLockButton.Text = "Login with PIN / Pattern / Password";
+            }
+            else
+            {
+               
+                fingerPrintButton.IsVisible = true;
+                dividerGrid.IsVisible = true;
+                
+                screenLockButton.BackgroundColor = Colors.Transparent;
+                screenLockButton.TextColor = Color.FromArgb("#10CFC9");
+                screenLockButton.BorderColor = Color.FromArgb("#10CFC9");
+                screenLockButton.BorderWidth = 2;
+                screenLockButton.Text = "Use Screen Lock (PIN/Pattern)";
+            }
         }
         catch (Exception ex)
         {
@@ -78,57 +110,66 @@ public partial class LoginPage : ACSBasePage
             return Task.CompletedTask;
         }
     }
-    private async void loginButton_Clicked(object sender, EventArgs e)
+    private async void fingerPrintButton_Clicked(object sender, EventArgs e)
     {
         try
         {
-            if (string.IsNullOrEmpty(phoneEntry.Text) || string.IsNullOrEmpty(passwordEntry.Text))
+            var request = new AuthenticationRequestConfiguration(
+                "Security Verification",
+                "Place your fingerprint to log in")
             {
-                await UIHelper.ShowMessage("Enter Phone Number and Password");
-                return;
-            }
+                AllowAlternativeAuthentication = false
+            };
 
-            await AuthenticateUserAsync();
+            var result = await CrossFingerprint.Current.AuthenticateAsync(request);
+
+            if (result.Authenticated)
+            {
+                await NavigateToNextPageAsync();
+            }
+            else
+            {
+                await UIHelper.ShowMessage("Fingerprint authentication failed or was cancelled.");
+            }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             await UIHelper.HandleException(ex);
         }
-       
     }
 
-    private async void fingerPrintButton_Clicked(object sender, EventArgs e)
-    {
-        //await AuthenticateUserAsync();
-        bool hasTodayData = await _dbContext.HasAnyExpenseTodayAsync();
-
-        await Task.Delay(200);
-
-        if (hasTodayData)
-        {
-            await Navigation.PushAsync(new TodayPage());
-        }
-        else
-        {
-            await Navigation.PushAsync(new MenuPage());
-        }
-    }
-
-    private async Task AuthenticateUserAsync()
+    private async void screenLockButton_Clicked(object sender, EventArgs e)
     {
         try
         {
-            bool available = await CrossFingerprint.Current.IsAvailableAsync(true);
-
-            if (!available)
+#if ANDROID
+            var activity = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
+            var keyguardManager = activity?.GetSystemService(Android.Content.Context.KeyguardService) as Android.App.KeyguardManager;
+            if (keyguardManager != null)
             {
-                await UIHelper.ShowMessage("Security authentication (biometrics or phone lock credentials) is not available or configured on this device.");
-                return;
-            }
+                if (!keyguardManager.IsKeyguardSecure)
+                {
+                    await UIHelper.ShowMessage("No secure screen lock (PIN, Pattern, or Password) is configured on this device.");
+                    return;
+                }
 
+                bool nativeAuthSuccess = await MainActivity.StartConfirmDeviceCredentialAsync();
+                if (nativeAuthSuccess)
+                {
+                    await NavigateToNextPageAsync();
+                    return;
+                }
+                else
+                {
+                    await UIHelper.ShowMessage("Authentication failed or cancelled.");
+                    return;
+                }
+            }
+#endif
+          
             var request = new AuthenticationRequestConfiguration(
                 "Security Verification",
-                "Confirm your fingerprint or device PIN/password to log in")
+                "Confirm your device PIN/Password/Pattern to log in")
             {
                 AllowAlternativeAuthentication = true
             };
@@ -137,18 +178,7 @@ public partial class LoginPage : ACSBasePage
 
             if (result.Authenticated)
             {
-                bool hasTodayData = await _dbContext.HasAnyExpenseTodayAsync();
-
-                await Task.Delay(200);
-
-                if (hasTodayData)
-                {
-                    await Navigation.PushAsync(new TodayPage());
-                }
-                else
-                {
-                    await Navigation.PushAsync(new MenuPage());
-                }
+                await NavigateToNextPageAsync();
             }
             else
             {
@@ -158,6 +188,26 @@ public partial class LoginPage : ACSBasePage
         catch (Exception ex)
         {
             await UIHelper.HandleException(ex);
+        }
+    }
+
+    private async Task NavigateToNextPageAsync()
+    {
+        try
+        {
+            var profile = await _dbContext.UserFinancialProfile.FirstOrDefaultAsync();
+            if (profile != null)
+            {
+                await Navigation.PushAsync(new DashboardPage());
+            }
+            else
+            {
+                await Navigation.PushAsync(new FinancialSetupPage());
+            }
+        }
+        catch
+        {
+            await Navigation.PushAsync(new DashboardPage());
         }
     }
 }

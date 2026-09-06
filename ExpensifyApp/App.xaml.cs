@@ -7,7 +7,7 @@ namespace ExpensifyApp
         public App()
         {
             InitializeComponent();
-            MainPage = new NavigationPage(new LoginPage());
+            MainPage = new NavigationPage(new DashboardPage());
         }
 
         //protected override Window CreateWindow(IActivationState? activationState)

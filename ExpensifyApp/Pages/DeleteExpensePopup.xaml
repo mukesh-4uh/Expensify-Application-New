@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpensifyApp.Pages.DeleteExpensePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Border Padding="0" StrokeThickness="0" BackgroundColor="#F5F7FA"
+            WidthRequest="320">
+        <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+        <Border.Shadow><Shadow Brush="#40000000" Offset="0,8" Radius="24"/></Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
+
+            <!-- ===== HEADER ===== -->
+            <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto,*">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF5252" Offset="0.0"/>
+                        <GradientStop Color="#D32F2F" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Label Text="🗑️" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Delete Expense" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                    <Label Text="This action cannot be undone" TextColor="#FFCDD2" FontSize="12"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== CONTENT & INFO ===== -->
+            <VerticalStackLayout Grid.Row="1" Padding="20,20,20,8" Spacing="16">
+                <Label Text="Are you sure you want to delete this expense?" 
+                       TextColor="#1C2340" FontSize="14" HorizontalTextAlignment="Center"/>
+
+                <!-- Expense Details Card -->
+                <Border BackgroundColor="#FFEBEE" StrokeThickness="0" Padding="14">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="2">
+                        <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="📂" FontSize="18" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Label x:Name="infoLabel" Grid.Column="1" Grid.Row="0" Text="" FontSize="14"
+                               FontAttributes="Bold" TextColor="#1C2340" VerticalOptions="Center"/>
+                        <Label x:Name="dateLabel" Grid.Column="1" Grid.Row="1" Text="" FontSize="12"
+                               TextColor="#8A94A6" VerticalOptions="Center"/>
+                        <Label x:Name="amountLabel" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Text="" FontSize="16"
+                               FontAttributes="Bold" TextColor="#D32F2F" VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- ===== BUTTONS ===== -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" Padding="20,8,20,20" ColumnSpacing="12">
+                <Button Text="Cancel" BackgroundColor="#F0F3F8" TextColor="#8A94A6"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnCancelClicked"/>
+                <Button Grid.Column="1" Text="Delete" BackgroundColor="#D32F2F" TextColor="White"
+                        FontAttributes="Bold" FontSize="14" CornerRadius="12"
+                        HeightRequest="46" Clicked="OnDeleteClicked"/>
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>

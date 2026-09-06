@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpensifyApp.Pages.FinancialSetupPage"
+             BackgroundColor="#F4F6FB"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="24,40,24,24" RowSpacing="20">
+
+        <!-- ===== TOP HEADER ===== -->
+        <VerticalStackLayout Grid.Row="0" Spacing="6" HorizontalOptions="Center">
+            <Label Text="Welcome to Expensify" FontSize="26" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+            <Label Text="Select how you wish to track your finances" FontSize="13" TextColor="#8A94A6" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <!-- ===== CONTENT ===== -->
+        <ScrollView Grid.Row="1" VerticalOptions="Center">
+            <VerticalStackLayout Spacing="24">
+
+                <!-- Mode Card 1: Budget Target Tracking -->
+                <Border x:Name="budgetModeCard" BackgroundColor="White" StrokeThickness="2" Stroke="#0D8C87" Padding="20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSelectBudgetMode"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                        <Label Text="🎯" FontSize="36" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Budget Target Tracking" FontSize="16" FontAttributes="Bold" TextColor="#1C2340"/>
+                            <Label Text="Set a monthly spending limit target. Best for managing daily costs and category limits." FontSize="12" TextColor="#8A94A6"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Mode Card 2: Salary & Commitments Tracking -->
+                <Border x:Name="commitmentsModeCard" BackgroundColor="White" StrokeThickness="2" Stroke="#E5E7EB" Padding="20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSelectCommitmentsMode"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                        <Label Text="💼" FontSize="36" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Salary &amp; Commitments Tracking" FontSize="16" FontAttributes="Bold" TextColor="#1C2340"/>
+                            <Label Text="Track fixed obligations, bills, EMIs, and compute your available safe-to-spend balance." FontSize="12" TextColor="#8A94A6"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Dynamic Amount Input Section -->
+                <VerticalStackLayout Spacing="8" Margin="0,10,0,0">
+                    <Label x:Name="amountTitleLabel" Text="Enter Monthly Budget Target (₹)" FontSize="14" FontAttributes="Bold" TextColor="#1C2340"/>
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB" Padding="12,0" HeightRequest="48">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="₹" FontSize="18" TextColor="#0D8C87" FontAttributes="Bold" VerticalOptions="Center" Margin="0,0,8,0"/>
+                            <Entry x:Name="amountEntry" Grid.Column="1" Keyboard="Numeric" Placeholder="e.g. 20000" PlaceholderColor="#C8CDD6" FontSize="14" TextColor="#1C2340" BackgroundColor="Transparent" HeightRequest="48" VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Error Message Label -->
+                <Label x:Name="errorLabel" IsVisible="False" Text="" TextColor="#E53935" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ===== BOTTOM ACTION BUTTON ===== -->
+        <Button Grid.Row="2" Text="Start Tracking ✓" BackgroundColor="#0D8C87" TextColor="White" FontAttributes="Bold" CornerRadius="12" HeightRequest="50" Clicked="OnSubmitClicked"/>
+
+    </Grid>
+</ContentPage>
