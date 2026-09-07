@@ -283,6 +283,18 @@ public partial class ProfilePage : ContentPage
         await Navigation.PushAsync(new LendingRecoveryPage());
     }
 
+    private async void OnBorrowedFromFriendsTapped(object sender, EventArgs e)
+    {
+        try
+        {
+            await Navigation.PushAsync(new BorrowedFromFriendsPage());
+        }
+        catch (Exception ex)
+        {
+            await UIHelper.HandleException(ex);
+        }
+    }
+
 
     private async void OnLogoutTapped(object sender, EventArgs e)
     {

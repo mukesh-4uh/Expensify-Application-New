@@ -26,6 +26,8 @@ namespace ExpensifyApp.DataBase
         public DbSet<LendingTransaction> LendingTransaction { get; set; }
         public DbSet<SavingsTransaction> SavingsTransaction { get; set; }
         public DbSet<SavingsGoal> SavingsGoal { get; set; }
+        public DbSet<BorrowedTransaction> BorrowedTransaction { get; set; }
+
 
 
         public ExpenseContext()
@@ -176,7 +178,21 @@ namespace ExpensifyApp.DataBase
                         IsCompleted INTEGER NOT NULL DEFAULT 0
                     );");
 
-
+                // Create BorrowedTransaction if it doesn't exist
+                await base.Database.ExecuteSqlRawAsync(
+                    @"CREATE TABLE IF NOT EXISTS BorrowedTransaction (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        PersonName TEXT NOT NULL DEFAULT '',
+                        MobileNumber TEXT NOT NULL DEFAULT '',
+                        Relationship TEXT NOT NULL DEFAULT '',
+                        Amount INTEGER NOT NULL DEFAULT 0,
+                        Purpose TEXT NOT NULL DEFAULT '',
+                        DateBorrowed TEXT NOT NULL,
+                        DueDate TEXT NOT NULL,
+                        DateRepaid TEXT,
+                        Status TEXT NOT NULL DEFAULT 'Pending',
+                        Notes TEXT NOT NULL DEFAULT ''
+                    );");
 
                 // Perform Schema migrations (try-catch for already migrated databases)
                 try

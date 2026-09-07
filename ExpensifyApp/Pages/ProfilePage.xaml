@@ -114,6 +114,20 @@
                             </Grid>
                             <BoxView HeightRequest="1" Color="#EEF0FF"/>
 
+                            <!-- Borrowed from Friends -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
+                                <Label Text="💸" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Borrowed from Friends" FontSize="14" TextColor="#1C2E35"/>
+                                    <Label Text="Track money you owe to others" FontSize="11" TextColor="#8A94A6"/>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="→" FontSize="18" TextColor="#8A94A6" VerticalOptions="Center"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnBorrowedFromFriendsTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="#EEF0FF"/>
+
                             <!-- Set Budget -->
                             <Grid ColumnDefinitions="Auto,*,Auto" Padding="16" HeightRequest="56">
                                 <Label Text="🎯" FontSize="20" VerticalOptions="Center" Margin="0,0,12,0"/>
