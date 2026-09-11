@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls.Shapes;
+using ExpensifyApp.Services;
 
 namespace ExpensifyApp.Pages;
 
@@ -32,6 +33,7 @@ public partial class DashboardPage : ContentPage
 
     // Monthly budget — user can set this in profile; default ₹20,000
     private const decimal DefaultBudget = 20000m;
+    private bool _hasCheckedGooglePrompt = false;
 
     public ObservableCollection<DashboardCategoryItem> CategoryItems { get; set; } = new();
     public ObservableCollection<DashboardExpenseItem> RecentTransactions { get; set; } = new();
@@ -54,6 +56,18 @@ public partial class DashboardPage : ContentPage
                     return;
                 }
                 await LoadDashboardData();
+
+                if (!_hasCheckedGooglePrompt)
+                {
+                    _hasCheckedGooglePrompt = true;
+                    if (GoogleAuthAndBackupService.ShouldShowPostLoginPrompt())
+                    {
+                        await Task.Delay(500);
+                        var popup = new GoogleSignInPopup();
+                        await this.ShowPopupAsync(popup);
+                    }
+                    _ = Task.Run(async () => await GoogleAuthAndBackupService.CheckAndRunWeeklyAutoBackupAsync());
+                }
             }
             catch
             {

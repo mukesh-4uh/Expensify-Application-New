@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Maui.Views;
 using ExpensifyApp.DataBase;
 using ExpensifyApp.Helpers;
+using ExpensifyApp.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -48,6 +49,9 @@ public partial class MenuPage : ContentPage
             
             _dbContext.ExpenseTable.Add(newExpense);
             await _dbContext.SaveChangesAsync();
+
+            // Simultaneously replicate changes to Google Sheets
+            GoogleAuthAndBackupService.TriggerDataReplication(_dbContext);
 
             // Run round-up check
             await AutoSaveHelper.HandleRoundUp(_dbContext, amount);

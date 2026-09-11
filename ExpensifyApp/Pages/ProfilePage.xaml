@@ -22,10 +22,26 @@
 
                     <!-- Avatar + Info -->
                     <VerticalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center" Margin="0,20,0,0">
-                        <Border WidthRequest="90" HeightRequest="90" StrokeThickness="3" Stroke="White" HorizontalOptions="Center">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="45"/></Border.StrokeShape>
-                            <Label Text="👤" FontSize="44" HorizontalOptions="Center" VerticalOptions="Center"/>
-                        </Border>
+                        <Grid WidthRequest="90" HeightRequest="90" HorizontalOptions="Center">
+                            <Border WidthRequest="90" HeightRequest="90" StrokeThickness="3" Stroke="White">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="45"/></Border.StrokeShape>
+                                <Grid HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#0F9F99">
+                                    <Label x:Name="defaultAvatarLabel" Text="👤" FontSize="44" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label x:Name="avatarInitialLabel" Text="G" FontSize="36" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False"/>
+                                    <Image x:Name="profileAvatarImage" Aspect="AspectFill" IsVisible="False" WidthRequest="90" HeightRequest="90"/>
+                                </Grid>
+                            </Border>
+                            <!-- Official Google "G" Badge Overlay -->
+                            <Border x:Name="googleBadgeBorder"
+                                    WidthRequest="28" HeightRequest="28"
+                                    BackgroundColor="White" Stroke="#E0E0E0" StrokeThickness="1"
+                                    HorizontalOptions="End" VerticalOptions="End"
+                                    IsVisible="False">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                <Border.Shadow><Shadow Brush="#30000000" Offset="0,2" Radius="4"/></Border.Shadow>
+                                <Image Source="google_logo.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                        </Grid>
                         
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                             <Label x:Name="profileNameLabel" Text="Premium Member" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center"/>
@@ -35,7 +51,7 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </HorizontalStackLayout>
-                        <Label Text="Premium Member" TextColor="#D1F8F6" FontSize="13" HorizontalOptions="Center"/>
+                        <Label x:Name="profileEmailLabel" Text="Offline Profile" TextColor="#D1F8F6" FontSize="13" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </Grid>
 
@@ -53,6 +69,77 @@
                             <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="4">
                                 <Label Text="TOTAL SPENT" TextColor="#8A94A6" FontSize="10" CharacterSpacing="0.5"/>
                                 <Label x:Name="totalSpentLabel" Text="₹0" TextColor="#10CFC9" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- Google Cloud & Sheets Backup Card -->
+                    <Label Text="Google Cloud &amp; Sheets Backup" FontSize="16" FontAttributes="Bold" TextColor="#1C2E35"/>
+
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
+                        <Border.Shadow><Shadow Brush="#0D000000" Offset="0,2" Radius="8"/></Border.Shadow>
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="14">
+                            <!-- Status Row -->
+                            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                                <Border WidthRequest="44" HeightRequest="44" BackgroundColor="#E6F7F6" StrokeThickness="0" VerticalOptions="Center">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                    <Label Text="📊" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label x:Name="googleStatusTitleLabel" Text="Google Sheets Backup" FontSize="14" FontAttributes="Bold" TextColor="#1C2E35"/>
+                                    <Label x:Name="googleStatusSubtitleLabel" Text="Sign in to back up data to your Google Sheet" FontSize="11" TextColor="#8A94A6"/>
+                                </VerticalStackLayout>
+                                <Border x:Name="googleStatusBadge" Grid.Column="2" BackgroundColor="#F0F2F5" StrokeThickness="0" Padding="8,4" VerticalOptions="Center">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                    <Label x:Name="googleStatusBadgeLabel" Text="Not Connected" FontSize="10" FontAttributes="Bold" TextColor="#8A94A6"/>
+                                </Border>
+                            </Grid>
+
+                            <!-- Action Buttons -->
+                            <VerticalStackLayout Grid.Row="1" Spacing="10">
+                                <!-- When not signed in: Commercial Google Sign In button -->
+                                <Border x:Name="googleSignInButton"
+                                        BackgroundColor="White" Stroke="#747775" StrokeThickness="1"
+                                        HeightRequest="46" Padding="14,0">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="23"/></Border.StrokeShape>
+                                    <Border.Shadow><Shadow Brush="#14000000" Offset="0,2" Radius="4"/></Border.Shadow>
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" VerticalOptions="Center" HorizontalOptions="Center">
+                                        <Image Source="google_logo.png" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1" Text="Sign in with Google" TextColor="#1F1F1F" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnGoogleSignInClicked"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+
+                                <!-- When signed in: Option to Backup to Google Sheets -->
+                                <Button x:Name="googleBackupNowButton"
+                                        Text="📊 Backup to Google Sheets Now"
+                                        BackgroundColor="#10CFC9" TextColor="White"
+                                        FontAttributes="Bold" FontSize="13"
+                                        HeightRequest="44" CornerRadius="12"
+                                        IsVisible="False"
+                                        Clicked="OnGoogleBackupNowClicked"/>
+
+                                <!-- When signed in: Locate & Open Current Excel/Sheets File -->
+                                <Button x:Name="googleLocateSheetButton"
+                                        Text="📂 Locate &amp; Open Excel Sheet"
+                                        BackgroundColor="#F0FDFC" TextColor="#0D8C87"
+                                        BorderColor="#0D8C87" BorderWidth="1.5"
+                                        FontAttributes="Bold" FontSize="13"
+                                        HeightRequest="44" CornerRadius="12"
+                                        IsVisible="False"
+                                        Clicked="OnGoogleLocateSheetClicked"/>
+
+                                <!-- When signed in: Disconnect button -->
+                                <Button x:Name="googleDisconnectButton"
+                                        Text="Disconnect Google Account"
+                                        BackgroundColor="#F7F8FC" TextColor="#E53935"
+                                        FontAttributes="Bold" FontSize="12"
+                                        HeightRequest="40" CornerRadius="10"
+                                        IsVisible="False"
+                                        Clicked="OnGoogleDisconnectClicked"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Border>

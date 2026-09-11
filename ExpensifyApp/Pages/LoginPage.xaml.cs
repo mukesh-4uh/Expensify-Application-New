@@ -1,11 +1,12 @@
 using CommunityToolkit.Maui.Converters;
+using CommunityToolkit.Maui.Views;
 using ExpensifyApp.DataBase;
 using ExpensifyApp.Helpers;
+using ExpensifyApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Plugin.Fingerprint;
 using Plugin.Fingerprint.Abstractions;
 using Microsoft.Maui.Graphics;
-
 
 namespace ExpensifyApp.Pages;
 
@@ -195,6 +196,12 @@ public partial class LoginPage : ACSBasePage
     {
         try
         {
+            if (GoogleAuthAndBackupService.ShouldShowPostLoginPrompt())
+            {
+                var popup = new GoogleSignInPopup();
+                await this.ShowPopupAsync(popup);
+            }
+
             var profile = await _dbContext.UserFinancialProfile.FirstOrDefaultAsync();
             if (profile != null)
             {

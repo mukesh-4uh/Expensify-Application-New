@@ -13,6 +13,7 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Grid;
 using Microsoft.Maui.Graphics;
+using ExpensifyApp.Services;
 
 namespace ExpensifyApp.Pages;
 
@@ -45,6 +46,8 @@ public partial class ProfilePage : ContentPage
                 dashboardModeSubtitle.Text = $"Current: {profile.DashboardMode}";
                 incomeSubtitle.Text = $"Current: ₹{profile.MonthlyIncome:N0}";
             }
+
+            UpdateGoogleSyncUI();
         }
         catch (Exception ex)
         {
@@ -332,6 +335,306 @@ public partial class ProfilePage : ContentPage
             await Navigation.PushAsync(new MenuPage());
         }
         catch(Exception ex)
+        {
+            await UIHelper.HandleException(ex);
+        }
+    }
+
+    private void UpdateGoogleSyncUI()
+    {
+        bool isConnected = GoogleAuthAndBackupService.IsSignedIn;
+
+        if (isConnected)
+        {
+            string email = GoogleAuthAndBackupService.UserEmail;
+            string name = GoogleAuthAndBackupService.UserName;
+            string photoUrl = GoogleAuthAndBackupService.UserPhotoUrl;
+
+            profileNameLabel.Text = name;
+            profileEmailLabel.Text = email;
+
+            // Show Google Account Initial & Photo with Google Badge
+            string initial = !string.IsNullOrWhiteSpace(name) ? name.Substring(0, 1).ToUpper() : "G";
+            avatarInitialLabel.Text = initial;
+            avatarInitialLabel.IsVisible = true;
+            defaultAvatarLabel.IsVisible = false;
+            googleBadgeBorder.IsVisible = true;
+
+            if (!string.IsNullOrWhiteSpace(photoUrl))
+            {
+                profileAvatarImage.Source = new UriImageSource
+                {
+                    Uri = new Uri(photoUrl),
+                    CachingEnabled = true,
+                    CacheValidity = TimeSpan.FromDays(7)
+                };
+                profileAvatarImage.IsVisible = true;
+            }
+            else
+            {
+                profileAvatarImage.IsVisible = false;
+            }
+
+            googleStatusTitleLabel.Text = "Google Sheets Connected 🟢";
+            googleStatusSubtitleLabel.Text = $"{email}\nLast Backup: {GoogleAuthAndBackupService.LastBackupDisplay}";
+            googleStatusBadge.BackgroundColor = Color.FromArgb("#E8F5E9");
+            googleStatusBadgeLabel.Text = "Connected";
+            googleStatusBadgeLabel.TextColor = Color.FromArgb("#2E7D32");
+
+            googleSignInButton.IsVisible = false;
+            googleBackupNowButton.IsVisible = true;
+            googleLocateSheetButton.IsVisible = true;
+            googleDisconnectButton.IsVisible = true;
+        }
+        else
+        {
+            profileNameLabel.Text = Preferences.Get("ProfileName", "Premium Member");
+            profileEmailLabel.Text = "Offline Profile";
+            profileAvatarImage.IsVisible = false;
+            avatarInitialLabel.IsVisible = false;
+            defaultAvatarLabel.IsVisible = true;
+            googleBadgeBorder.IsVisible = false;
+
+            googleStatusTitleLabel.Text = "Google Sheets Backup";
+            googleStatusSubtitleLabel.Text = "Sign in to back up data to your Google Sheet";
+            googleStatusBadge.BackgroundColor = Color.FromArgb("#F0F2F5");
+            googleStatusBadgeLabel.Text = "Not Connected";
+            googleStatusBadgeLabel.TextColor = Color.FromArgb("#8A94A6");
+
+            googleSignInButton.IsVisible = true;
+            googleBackupNowButton.IsVisible = false;
+            googleLocateSheetButton.IsVisible = false;
+            googleDisconnectButton.IsVisible = false;
+        }
+    }
+
+    private async void OnGoogleLocateSheetClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // If we have a live Google Spreadsheet, offer to open it directly
+            string spreadsheetId = GoogleAuthAndBackupService.StoredSpreadsheetId;
+            if (!string.IsNullOrWhiteSpace(spreadsheetId))
+            {
+                string sheetsUrl = GoogleDirectSheetsApiService.GetSpreadsheetWebUrl(spreadsheetId);
+                string choice = await DisplayActionSheet(
+                    $"📊 Your Expensify Master Workbook\nAccount: {GoogleAuthAndBackupService.UserEmail}",
+                    "Cancel",
+                    null,
+                    "🌐 Open in Google Sheets (Online)",
+                    "📋 Copy Spreadsheet Link",
+                    "📤 Share Spreadsheet Link",
+                    "📄 Open Local Backup File");
+
+                if (choice == "🌐 Open in Google Sheets (Online)")
+                {
+                    await Browser.Default.OpenAsync(sheetsUrl, BrowserLaunchMode.SystemPreferred);
+                }
+                else if (choice == "📋 Copy Spreadsheet Link")
+                {
+                    await Clipboard.Default.SetTextAsync(sheetsUrl);
+                    await UIHelper.ShowToastMessage("Spreadsheet link copied to clipboard!");
+                }
+                else if (choice == "📤 Share Spreadsheet Link")
+                {
+                    await Share.Default.RequestAsync(new ShareTextRequest
+                    {
+                        Title = "Share Expensify Google Sheet",
+                        Text = sheetsUrl
+                    });
+                }
+                else if (choice == "📄 Open Local Backup File")
+                {
+                    await OpenLocalBackupFileAsync();
+                }
+                return;
+            }
+
+            // No live sheet yet — show local backup options
+            await OpenLocalBackupFileAsync();
+        }
+        catch (Exception ex)
+        {
+            await UIHelper.HandleException(ex);
+        }
+    }
+
+    private async Task OpenLocalBackupFileAsync()
+    {
+        string path = GoogleAuthAndBackupService.GetMasterBackupFilePath();
+        if (!File.Exists(path))
+        {
+            var backupRes = await GoogleAuthAndBackupService.BackupNowAsync(_db);
+            path = backupRes.LocalBackupPath;
+        }
+
+        var fileInfo = new FileInfo(path);
+        string fileSize = fileInfo.Exists ? $"{fileInfo.Length / 1024.0:F1} KB" : "0 KB";
+        string modified = fileInfo.Exists ? fileInfo.LastWriteTime.ToString("dd MMM yyyy, hh:mm tt") : "Not yet generated";
+
+        string choice = await DisplayActionSheet(
+            $"📄 Local Backup: {Path.GetFileName(path)} ({fileSize})\nLast Synced: {modified}",
+            "Cancel",
+            null,
+            "📊 Open in Google Sheets / Excel",
+            "📋 Copy File Path",
+            "📤 Share Workbook to Drive / Apps");
+
+        if (choice == "📊 Open in Google Sheets / Excel" || choice == "📤 Share Workbook to Drive / Apps")
+        {
+            await GoogleAuthAndBackupService.ShareToGoogleDriveOrSheetsAsync(path);
+        }
+        else if (choice == "📋 Copy File Path")
+        {
+            await Clipboard.Default.SetTextAsync(path);
+            await UIHelper.ShowToastMessage("File path copied to clipboard!");
+        }
+    }
+
+
+    private async void OnGoogleBackupNowClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!GoogleAuthAndBackupService.IsSignedIn)
+            {
+                await DisplayAlert("Google Backup", "Please connect your Google account first.", "OK");
+                return;
+            }
+
+            // If no access token yet, prompt user to grant Google Sheets permission first
+            if (string.IsNullOrWhiteSpace(GoogleAuthAndBackupService.StoredAccessToken))
+            {
+                bool grantAccess = await DisplayAlert(
+                    "Grant Google Sheets Access",
+                    $"To sync directly to your Google Sheet, Expensify needs permission to create and write to a spreadsheet in your Google Drive.\n\nThis will open a Google sign-in page. Please sign in as {GoogleAuthAndBackupService.UserEmail} and allow access.",
+                    "Grant Access",
+                    "Use Local Backup Only");
+
+                if (grantAccess)
+                {
+                    string? token = await GoogleAuthAndBackupService.ObtainAccessTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        await UIHelper.ShowToastMessage("⚠️ Access not granted. Using local backup.");
+                    }
+                }
+            }
+
+            googleBackupNowButton.IsEnabled = false;
+            googleBackupNowButton.Text = "⏳ Backing up to Google Sheets...";
+
+            var result = await GoogleAuthAndBackupService.BackupNowAsync(_db);
+
+            UpdateGoogleSyncUI();
+
+            googleBackupNowButton.IsEnabled = true;
+            googleBackupNowButton.Text = "📊 Backup to Google Sheets Now";
+
+            if (result.Success)
+            {
+                // If synced to a live sheet, offer to open it directly
+                string spreadsheetId = GoogleAuthAndBackupService.StoredSpreadsheetId;
+                if (!string.IsNullOrWhiteSpace(spreadsheetId))
+                {
+                    string sheetsUrl = GoogleDirectSheetsApiService.GetSpreadsheetWebUrl(spreadsheetId);
+                    bool openSheet = await DisplayAlert(
+                        "✅ Synced to Google Sheets",
+                        $"{result.Message}\n\nYour data is live in your Google Sheet.\nWould you like to open it now?",
+                        "Open Google Sheet",
+                        "Done");
+
+                    if (openSheet)
+                        await Browser.Default.OpenAsync(sheetsUrl, BrowserLaunchMode.SystemPreferred);
+                }
+                else
+                {
+                    bool openShare = await DisplayAlert(
+                        "Google Sheets Backup",
+                        $"{result.Message}\n\nWould you like to open or save this workbook in Google Drive / Google Sheets now?",
+                        "Open in Google Sheets/Drive",
+                        "Done");
+
+                    if (openShare)
+                        await GoogleAuthAndBackupService.ShareToGoogleDriveOrSheetsAsync(result.LocalBackupPath);
+                }
+            }
+            else
+            {
+                await DisplayAlert("Backup Notice", result.Message, "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            googleBackupNowButton.IsEnabled = true;
+            googleBackupNowButton.Text = "📊 Backup to Google Sheets Now";
+            await UIHelper.HandleException(ex);
+        }
+    }
+
+    private async void OnGoogleSignInClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            string? selectedEmail = await GoogleAccountPickerService.PickGoogleAccountAsync();
+            if (!string.IsNullOrWhiteSpace(selectedEmail))
+            {
+                string username = selectedEmail.Split('@')[0];
+                string name = char.ToUpper(username[0]) + (username.Length > 1 ? username.Substring(1).ToLower() : "");
+                string encodedEmail = Uri.EscapeDataString(selectedEmail.ToLowerInvariant());
+                string encodedName = Uri.EscapeDataString(name);
+                string avatarUrl = $"https://unavatar.io/{encodedEmail}?fallback=https://ui-avatars.com/api/?name={encodedName}%26background=0F9F99%26color=fff%26size=128";
+
+                await GoogleAuthAndBackupService.SignInWithGoogleAsync(selectedEmail, name, avatarUrl);
+                UpdateGoogleSyncUI();
+                await UIHelper.ShowToastMessage($"Connected as {selectedEmail}");
+
+                // Now request Google OAuth access so we can sync to their real Google Sheet
+                bool grantAccess = await DisplayAlert(
+                    "Grant Google Sheets Access",
+                    $"To automatically back up your data to your personal Google Sheet,\n\nExpensify needs permission to create and write to a spreadsheet in your Google Drive.\n\nThis will open a Google sign-in page. Please sign in as {selectedEmail} and allow access.",
+                    "Grant Access",
+                    "Skip for Now");
+
+                if (grantAccess)
+                {
+                    string? token = await GoogleAuthAndBackupService.ObtainAccessTokenAsync();
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        await UIHelper.ShowToastMessage("✅ Google Sheets access granted! Syncing now...");
+                        GoogleAuthAndBackupService.TriggerDataReplication(_db);
+                    }
+                    else
+                    {
+                        await UIHelper.ShowToastMessage("⚠️ Access not granted. Local backup will still work.");
+                    }
+                }
+                return;
+            }
+
+            var popup = new GoogleSignInPopup();
+            await this.ShowPopupAsync(popup);
+            UpdateGoogleSyncUI();
+        }
+        catch (Exception ex)
+        {
+            await UIHelper.HandleException(ex);
+        }
+    }
+
+    private async void OnGoogleDisconnectClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            bool confirm = await DisplayAlert("Disconnect Google", "Are you sure you want to disconnect your Google account? Automatic Google Sheets backups will be paused.", "Disconnect", "Cancel");
+            if (confirm)
+            {
+                await GoogleAuthAndBackupService.SignOutAsync();
+                UpdateGoogleSyncUI();
+                await UIHelper.ShowToastMessage("Google account disconnected.");
+            }
+        }
+        catch (Exception ex)
         {
             await UIHelper.HandleException(ex);
         }

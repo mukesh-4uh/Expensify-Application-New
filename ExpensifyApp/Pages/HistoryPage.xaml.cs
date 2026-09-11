@@ -1,5 +1,6 @@
 using ExpensifyApp.DataBase;
 using ExpensifyApp.Helpers;
+using ExpensifyApp.Services;
 using Microsoft.EntityFrameworkCore;
 using CommunityToolkit.Maui.Views;
 using System;
@@ -167,6 +168,7 @@ public partial class HistoryPage : ContentPage
                 row.Date = editResult.Date;
                 _db.ExpenseTable.Update(row);
                 await _db.SaveChangesAsync();
+                GoogleAuthAndBackupService.TriggerDataReplication(_db);
                 await DisplayAlert("Success", "Expense updated successfully! ✅", "OK");
             }
 
@@ -456,6 +458,7 @@ public partial class HistoryPage : ContentPage
         {
             _db.ExpenseTable.Remove(row);
             await _db.SaveChangesAsync();
+            GoogleAuthAndBackupService.TriggerDataReplication(_db);
         }
 
         await LoadHistory();
