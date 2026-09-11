@@ -97,6 +97,93 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <!-- ===== SECTION: MONTHLY SALARY & SAVINGS PLAN ===== -->
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="18,16">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <Border.Shadow><Shadow Brush="#0D000000" Offset="0,4" Radius="10"/></Border.Shadow>
+                    <VerticalStackLayout Spacing="14">
+
+                        <!-- Section Title -->
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Border WidthRequest="36" HeightRequest="36" BackgroundColor="#E8F5E9" StrokeThickness="0">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                                <Label Text="💼" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0" VerticalOptions="Center" Spacing="1">
+                                <Label Text="Monthly Salary &amp; Plan" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                <Label Text="Set income and savings strategy for this month" FontSize="11" TextColor="#8A94A6"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" BackgroundColor="#F0F3F8"/>
+
+                        <!-- Monthly Salary Input -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Monthly Salary (₹)" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
+                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,10">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Label Text="₹" FontSize="16" FontAttributes="Bold" TextColor="#0D8C87" VerticalOptions="Center" Margin="0,0,8,0"/>
+                                    <Entry x:Name="monthlySalaryEntry" Grid.Column="1"
+                                           Placeholder="Enter your salary for this month"
+                                           PlaceholderColor="#B0B8C1"
+                                           TextColor="#1C2340" FontSize="14"
+                                           Keyboard="Numeric"
+                                           BackgroundColor="Transparent"
+                                           ReturnType="Done"
+                                           Completed="OnSalaryEntryCompleted"/>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Savings Plan Chooser -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Savings Plan" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
+                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="10,4">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                                <Picker x:Name="savingsPlanPicker"
+                                        Title="Choose a savings plan..."
+                                        FontSize="14" TextColor="#1C2340"
+                                        TitleColor="#B0B8C1"
+                                        SelectedIndexChanged="OnSavingsPlanChanged">
+                                    <Picker.Items>
+                                        <x:String>50/30/20 Rule — 30% Savings</x:String>
+                                        <x:String>60/20/20 Rule — 20% Savings</x:String>
+                                        <x:String>70/20/10 Rule — 10% Savings</x:String>
+                                        <x:String>Aggressive Saver — 40% Savings</x:String>
+                                        <x:String>Student Plan — 25% Savings</x:String>
+                                        <x:String>Custom Plan</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Computed Savings Amount Preview -->
+                        <Border x:Name="salaryPreviewBorder" BackgroundColor="#F0FDF9" StrokeThickness="1" Stroke="#B2DFDB" Padding="12,10" IsVisible="False">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="10"/></Border.StrokeShape>
+                            <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                                    <Label Text="Target Savings" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                                    <Label x:Name="previewSavingsLabel" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#0D8C87" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                                <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="#B2DFDB" VerticalOptions="FillAndExpand" Margin="0,2"/>
+                                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" Spacing="2">
+                                    <Label Text="Available to Spend" FontSize="10" TextColor="#8A94A6" HorizontalOptions="Center"/>
+                                    <Label x:Name="previewSpendLabel" Text="₹0" FontSize="15" FontAttributes="Bold" TextColor="#1C2340" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <!-- Apply Button -->
+                        <Button x:Name="applySalaryBtn" Text="Apply &amp; Update Plan 💾"
+                                BackgroundColor="#0D8C87" TextColor="White"
+                                FontSize="13" FontAttributes="Bold"
+                                HeightRequest="44" CornerRadius="12"
+                                Clicked="OnApplySalaryPlanClicked"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- ===== QUICK SAVINGS ACTIONS BAR ===== -->
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                     <!-- Deposit Button -->

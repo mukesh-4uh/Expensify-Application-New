@@ -110,11 +110,9 @@ public partial class BorrowedFromFriendsPage : ContentPage
             // Summary stats
             int totalOwed = raw.Where(b => b.Status != "Paid").Sum(b => b.Amount);
             int totalPaid = raw.Where(b => b.Status == "Paid").Sum(b => b.Amount);
-            int overdueCount = raw.Count(b => b.Status == "Overdue");
 
             totalOwedLabel.Text = $"₹{totalOwed:N0}";
             totalPaidLabel.Text = $"₹{totalPaid:N0}";
-            overdueCountLabel.Text = overdueCount.ToString();
 
             RenderList(raw);
         }
@@ -261,7 +259,7 @@ public partial class BorrowedFromFriendsPage : ContentPage
         {
             "Pending" => Color.FromArgb("#EF6C00"),
             "Paid"    => Color.FromArgb("#2E7D32"),
-            _         => Color.FromArgb("#7B2FF7")
+            _         => Color.FromArgb("#0F9F99")
         };
         if (_currentFilter == "All")     { chipAll.BackgroundColor = activeBg;     lblAll.TextColor = Colors.White; }
         else if (_currentFilter == "Pending") { chipPending.BackgroundColor = activeBg; lblPending.TextColor = Colors.White; }

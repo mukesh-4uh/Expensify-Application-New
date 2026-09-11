@@ -7,40 +7,31 @@
              BackgroundColor="#F4F6FB"
              NavigationPage.HasNavigationBar="False">
 
-    <Grid RowDefinitions="Auto,*">
+    <!-- Pure Grid layout without any StackLayout or other Layout controls -->
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
 
-        <!-- ===== GRADIENT HEADER ===== -->
+        <!-- ===== ROW 0: GRADIENT HEADER ===== -->
         <Border Grid.Row="0" StrokeThickness="0" Padding="20,46,20,22">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="0,0,28,28"/>
             </Border.StrokeShape>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#7B2FF7" Offset="0.0"/>
-                    <GradientStop Color="#3F1099" Offset="1.0"/>
+                    <GradientStop Color="#0F9F99" Offset="0.0"/>
+                    <GradientStop Color="#086B67" Offset="1.0"/>
                 </LinearGradientBrush>
             </Border.Background>
 
-            <VerticalStackLayout Spacing="18">
+            <Grid RowDefinitions="Auto,Auto" RowSpacing="18">
 
-                <!-- Title Row -->
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <Border Grid.Column="0" BackgroundColor="#33FFFFFF" StrokeThickness="0"
-                            WidthRequest="40" HeightRequest="40">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                        <Label Text="←" TextColor="White" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnBackTapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </Border>
+                <!-- Title Row: Title &amp; Subtitle on left, + Borrow button on right -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <Grid Grid.Column="0" RowDefinitions="Auto,Auto" RowSpacing="2" VerticalOptions="Center">
+                        <Label Grid.Row="0" Text="Borrowed Tracker" TextColor="White" FontSize="20" FontAttributes="Bold"/>
+                        <Label Grid.Row="1" Text="Money you owe to friends &amp; family" TextColor="#B2F2EE" FontSize="11"/>
+                    </Grid>
 
-                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="2">
-                        <Label Text="Borrowed Tracker" TextColor="White" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
-                        <Label Text="Money you owe to friends &amp; family" TextColor="#C9B5FF" FontSize="11" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-
-                    <Border Grid.Column="2" StrokeThickness="0" BackgroundColor="#33FFFFFF" Padding="14,10">
+                    <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#33FFFFFF" Padding="14,10" VerticalOptions="Center">
                         <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
                         <Label Text="+ Borrow" TextColor="White" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
                         <Border.GestureRecognizers>
@@ -49,179 +40,164 @@
                     </Border>
                 </Grid>
 
-                <!-- Summary Cards Row -->
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
-                    <!-- Total Owed -->
-                    <Border Grid.Column="0" BackgroundColor="#20FFFFFF" StrokeThickness="0" Padding="14,12">
+                <!-- Summary Cards Row: 2 columns only (Total Owed and Total Paid) -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="14">
+                    <!-- Total Owed Card -->
+                    <Border Grid.Column="0" BackgroundColor="#20FFFFFF" StrokeThickness="0" Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
-                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                            <Label Text="💸" FontSize="20" HorizontalOptions="Center"/>
-                            <Label x:Name="totalOwedLabel" Text="₹0" TextColor="White" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center"/>
-                            <Label Text="Total Owed" TextColor="#C9B5FF" FontSize="10" HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4" HorizontalOptions="Center">
+                            <Label Grid.Row="0" Text="&#x1F4B8;" FontSize="22" HorizontalOptions="Center"/>
+                            <Label Grid.Row="1" x:Name="totalOwedLabel" Text="₹0" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            <Label Grid.Row="2" Text="Total Owed" TextColor="#B2F2EE" FontSize="10" HorizontalOptions="Center"/>
+                        </Grid>
                     </Border>
-                    <!-- Total Paid -->
-                    <Border Grid.Column="1" BackgroundColor="#20FFFFFF" StrokeThickness="0" Padding="14,12">
+
+                    <!-- Total Paid Card -->
+                    <Border Grid.Column="1" BackgroundColor="#20FFFFFF" StrokeThickness="0" Padding="16,14">
                         <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
-                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                            <Label Text="✅" FontSize="20" HorizontalOptions="Center"/>
-                            <Label x:Name="totalPaidLabel" Text="₹0" TextColor="White" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center"/>
-                            <Label Text="Total Paid" TextColor="#C9B5FF" FontSize="10" HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                    <!-- Overdue -->
-                    <Border Grid.Column="2" BackgroundColor="#20FFFFFF" StrokeThickness="0" Padding="14,12">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="16"/></Border.StrokeShape>
-                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                            <Label Text="🚨" FontSize="20" HorizontalOptions="Center"/>
-                            <Label x:Name="overdueCountLabel" Text="0" TextColor="White" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center"/>
-                            <Label Text="Overdue" TextColor="#C9B5FF" FontSize="10" HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4" HorizontalOptions="Center">
+                            <Label Grid.Row="0" Text="&#x2705;" FontSize="22" HorizontalOptions="Center"/>
+                            <Label Grid.Row="1" x:Name="totalPaidLabel" Text="₹0" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                            <Label Grid.Row="2" Text="Total Paid" TextColor="#B2F2EE" FontSize="10" HorizontalOptions="Center"/>
+                        </Grid>
                     </Border>
                 </Grid>
 
-            </VerticalStackLayout>
+            </Grid>
         </Border>
 
-        <!-- ===== BODY ===== -->
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,18,20,24" Spacing="16">
+        <!-- ===== ROW 1: FILTER CHIPS ===== -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="10" Padding="20,18,20,0">
+            <Border x:Name="chipAll" Grid.Column="0" StrokeThickness="0" BackgroundColor="#0F9F99" Padding="12,10">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="All"/></Border.GestureRecognizers>
+                <Label x:Name="lblAll" Text="All" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </Border>
+            <Border x:Name="chipPending" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <Border.Shadow><Shadow Brush="#10000000" Offset="0,1" Radius="4"/></Border.Shadow>
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Pending"/></Border.GestureRecognizers>
+                <Label x:Name="lblPending" Text="Unpaid 🟠" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </Border>
+            <Border x:Name="chipPaid" Grid.Column="2" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
+                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                <Border.Shadow><Shadow Brush="#10000000" Offset="0,1" Radius="4"/></Border.Shadow>
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Paid"/></Border.GestureRecognizers>
+                <Label x:Name="lblPaid" Text="Paid ✅" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </Border>
+        </Grid>
 
-                <!-- Filter Chips -->
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                    <Border x:Name="chipAll" Grid.Column="0" StrokeThickness="0" BackgroundColor="#7B2FF7" Padding="12,10">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="All"/></Border.GestureRecognizers>
-                        <Label x:Name="lblAll" Text="All" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    </Border>
-                    <Border x:Name="chipPending" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                        <Border.Shadow><Shadow Brush="#10000000" Offset="0,1" Radius="4"/></Border.Shadow>
-                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Pending"/></Border.GestureRecognizers>
-                        <Label x:Name="lblPending" Text="Unpaid 🟠" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    </Border>
-                    <Border x:Name="chipPaid" Grid.Column="2" StrokeThickness="0" BackgroundColor="White" Padding="12,10">
-                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                        <Border.Shadow><Shadow Brush="#10000000" Offset="0,1" Radius="4"/></Border.Shadow>
-                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="Paid"/></Border.GestureRecognizers>
-                        <Label x:Name="lblPaid" Text="Paid ✅" TextColor="#8A94A6" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    </Border>
-                </Grid>
+        <!-- ===== ROW 2: LIST HEADER ===== -->
+        <Label Grid.Row="2" x:Name="listTitleLabel" Text="All Records (0)" FontSize="16"
+               FontAttributes="Bold" TextColor="#1C2340" Margin="24,14,20,8"/>
 
-                <!-- List Header -->
-                <Label x:Name="listTitleLabel" Text="All Records (0)" FontSize="16"
-                       FontAttributes="Bold" TextColor="#1C2340" Margin="4,4,0,0"/>
+        <!-- ===== ROW 3: COLLECTION VIEW ===== -->
+        <CollectionView Grid.Row="3" x:Name="borrowedCollectionView" SelectionMode="None" Margin="20,0,20,12">
+            <CollectionView.EmptyView>
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="30" Margin="0,10">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                    <Border.Shadow><Shadow Brush="#0A000000" Offset="0,2" Radius="10"/></Border.Shadow>
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10" HorizontalOptions="Center">
+                        <Label Grid.Row="0" Text="&#x1F91D;" FontSize="42" HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Text="No borrowed records yet" FontSize="16" FontAttributes="Bold"
+                               TextColor="#1C2340" HorizontalOptions="Center"/>
+                        <Label Grid.Row="2" Text="Tap '+ Borrow' to log money you borrowed." FontSize="12"
+                               TextColor="#8A94A6" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </CollectionView.EmptyView>
 
-                <!-- CollectionView -->
-                <CollectionView x:Name="borrowedCollectionView" SelectionMode="None">
-                    <CollectionView.EmptyView>
-                        <Border BackgroundColor="White" StrokeThickness="0" Padding="30" Margin="0,10">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
-                            <Border.Shadow><Shadow Brush="#0A000000" Offset="0,2" Radius="10"/></Border.Shadow>
-                            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                                <Label Text="🤝" FontSize="42" HorizontalOptions="Center"/>
-                                <Label Text="No borrowed records yet" FontSize="16" FontAttributes="Bold"
-                                       TextColor="#1C2340" HorizontalOptions="Center"/>
-                                <Label Text="Tap '+ Borrow' to log money you borrowed." FontSize="12"
-                                       TextColor="#8A94A6" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-                            </VerticalStackLayout>
-                        </Border>
-                    </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView Threshold="120" Margin="0,0,0,12">
+                        <!-- Swipe Left: Mark Paid -->
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Mark Paid ✓" BackgroundColor="#2E7D32"
+                                           Invoked="OnSwipeMarkPaidInvoked" CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        <!-- Swipe Right: Delete -->
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Delete 🗑" BackgroundColor="#D32F2F"
+                                           Invoked="OnSwipeDeleteInvoked" CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
 
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <SwipeView Threshold="120" Margin="0,0,0,12">
-                                <!-- Swipe Left: Mark Paid -->
-                                <SwipeView.LeftItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Mark Paid ✓" BackgroundColor="#2E7D32"
-                                                   Invoked="OnSwipeMarkPaidInvoked" CommandParameter="{Binding .}"/>
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <!-- Swipe Right: Delete -->
-                                <SwipeView.RightItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Delete 🗑" BackgroundColor="#D32F2F"
-                                                   Invoked="OnSwipeDeleteInvoked" CommandParameter="{Binding .}"/>
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
+                        <!-- Card -->
+                        <Border BackgroundColor="White" StrokeThickness="0" Padding="16,14">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                            <Border.Shadow><Shadow Brush="#0D000000" Offset="0,3" Radius="12"/></Border.Shadow>
 
-                                <!-- Card -->
-                                <Border BackgroundColor="White" StrokeThickness="0" Padding="16,14">
-                                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
-                                    <Border.Shadow><Shadow Brush="#0D000000" Offset="0,3" Radius="12"/></Border.Shadow>
+                            <Grid RowDefinitions="Auto,1,Auto,Auto" RowSpacing="10">
 
-                                    <Grid RowDefinitions="Auto,1,Auto,Auto" RowSpacing="10">
+                                <!-- Row 0: Avatar + Name + Amount + Status -->
+                                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
 
-                                        <!-- Row 0: Avatar + Name + Amount + Status -->
-                                        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                    <!-- Avatar Circle -->
+                                    <Border Grid.Column="0" WidthRequest="46" HeightRequest="46"
+                                            BackgroundColor="{Binding AvatarBg}" StrokeThickness="0" VerticalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
+                                        <Label Text="{Binding AvatarEmoji}" FontSize="22"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
 
-                                            <!-- Avatar Circle -->
-                                            <Border Grid.Column="0" WidthRequest="46" HeightRequest="46"
-                                                    BackgroundColor="{Binding AvatarBg}" StrokeThickness="0" VerticalOptions="Center">
-                                                <Border.StrokeShape><RoundRectangle CornerRadius="14"/></Border.StrokeShape>
-                                                <Label Text="{Binding AvatarEmoji}" FontSize="22"
-                                                       HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            </Border>
-
-                                            <!-- Name + Relation + Date -->
-                                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                                                <Label Text="{Binding PersonName}" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
-                                                <Label Text="{Binding RelationshipDisplay}" FontSize="11" TextColor="#8A94A6"/>
-                                            </VerticalStackLayout>
-
-                                            <!-- Amount -->
-                                            <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" Spacing="2">
-                                                <Label Text="{Binding AmountDisplay}" FontSize="16" FontAttributes="Bold"
-                                                       TextColor="#7B2FF7" HorizontalOptions="End"/>
-                                                <Label Text="{Binding DateBorrowedStr}" FontSize="10" TextColor="#B0B8C1" HorizontalOptions="End"/>
-                                            </VerticalStackLayout>
-
-                                            <!-- Status Pill -->
-                                            <Border Grid.Column="3" BackgroundColor="{Binding StatusBg}" StrokeThickness="0"
-                                                    Padding="8,4" VerticalOptions="Center">
-                                                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
-                                                <Label Text="{Binding StatusText}" FontSize="10" FontAttributes="Bold"
-                                                       TextColor="{Binding StatusColor}"/>
-                                            </Border>
-                                        </Grid>
-
-                                        <!-- Divider -->
-                                        <BoxView Grid.Row="1" BackgroundColor="#F4F6FB"/>
-
-                                        <!-- Row 2: Purpose + Due Date -->
-                                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
-                                            <VerticalStackLayout Spacing="3" VerticalOptions="Center">
-                                                <Label Text="{Binding PurposeDisplay}" FontSize="12" TextColor="#1C2340" FontAttributes="Bold"/>
-                                                <Label Text="{Binding DueDateStr, StringFormat='Pay by: {0}'}" FontSize="11"
-                                                       TextColor="{Binding DueColor}"/>
-                                            </VerticalStackLayout>
-
-                                            <!-- Quick Mark Paid Button -->
-                                            <Button Grid.Column="1"
-                                                    Text="Mark Paid ✓"
-                                                    HeightRequest="34" FontSize="11" FontAttributes="Bold"
-                                                    BackgroundColor="#EDE7FF" TextColor="#7B2FF7"
-                                                    CornerRadius="10" Padding="12,0"
-                                                    IsVisible="{Binding IsUnpaid}"
-                                                    Clicked="OnMarkPaidClicked"
-                                                    CommandParameter="{Binding .}"/>
-                                        </Grid>
-
-                                        <!-- Row 3: Notes (optional) -->
-                                        <Label Grid.Row="3"
-                                               Text="{Binding Notes}" FontSize="11" TextColor="#8A94A6"
-                                               IsVisible="{Binding HasNotes}"
-                                               LineBreakMode="TailTruncation"/>
+                                    <!-- Name + Relation -->
+                                    <Grid Grid.Column="1" RowDefinitions="Auto,Auto" RowSpacing="2" VerticalOptions="Center">
+                                        <Label Grid.Row="0" Text="{Binding PersonName}" FontSize="15" FontAttributes="Bold" TextColor="#1C2340"/>
+                                        <Label Grid.Row="1" Text="{Binding RelationshipDisplay}" FontSize="11" TextColor="#8A94A6"/>
                                     </Grid>
-                                </Border>
-                            </SwipeView>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
 
-            </VerticalStackLayout>
-        </ScrollView>
+                                    <!-- Amount + Date -->
+                                    <Grid Grid.Column="2" RowDefinitions="Auto,Auto" RowSpacing="2" HorizontalOptions="End" VerticalOptions="Center">
+                                        <Label Grid.Row="0" Text="{Binding AmountDisplay}" FontSize="16" FontAttributes="Bold"
+                                               TextColor="#7B2FF7" HorizontalOptions="End"/>
+                                        <Label Grid.Row="1" Text="{Binding DateBorrowedStr}" FontSize="10" TextColor="#B0B8C1" HorizontalOptions="End"/>
+                                    </Grid>
+
+                                    <!-- Status Pill -->
+                                    <Border Grid.Column="3" BackgroundColor="{Binding StatusBg}" StrokeThickness="0"
+                                            Padding="8,4" VerticalOptions="Center">
+                                        <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                                        <Label Text="{Binding StatusText}" FontSize="10" FontAttributes="Bold"
+                                               TextColor="{Binding StatusColor}"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="1" BackgroundColor="#F4F6FB"/>
+
+                                <!-- Row 2: Purpose + Due Date + Mark Paid Button -->
+                                <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                                    <Grid Grid.Column="0" RowDefinitions="Auto,Auto" RowSpacing="3" VerticalOptions="Center">
+                                        <Label Grid.Row="0" Text="{Binding PurposeDisplay}" FontSize="12" TextColor="#1C2340" FontAttributes="Bold"/>
+                                        <Label Grid.Row="1" Text="{Binding DueDateStr, StringFormat='Pay by: {0}'}" FontSize="11"
+                                               TextColor="{Binding DueColor}"/>
+                                    </Grid>
+
+                                    <!-- Quick Mark Paid Button -->
+                                    <Button Grid.Column="1"
+                                            Text="Mark Paid ✓"
+                                            HeightRequest="34" FontSize="11" FontAttributes="Bold"
+                                            BackgroundColor="#EDE7FF" TextColor="#7B2FF7"
+                                            CornerRadius="10" Padding="12,0"
+                                            IsVisible="{Binding IsUnpaid}"
+                                            Clicked="OnMarkPaidClicked"
+                                            CommandParameter="{Binding .}"/>
+                                </Grid>
+
+                                <!-- Row 3: Notes (optional) -->
+                                <Label Grid.Row="3"
+                                       Text="{Binding Notes}" FontSize="11" TextColor="#8A94A6"
+                                       IsVisible="{Binding HasNotes}"
+                                       LineBreakMode="TailTruncation"/>
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
     </Grid>
 </ContentPage>

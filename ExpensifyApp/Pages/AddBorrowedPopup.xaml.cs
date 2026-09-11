@@ -23,7 +23,6 @@ public partial class AddBorrowedPopup : Popup
     {
         InitializeComponent();
         dateBorrowedPicker.Date = DateTime.Today;
-        dueDatePicker.Date      = DateTime.Today.AddDays(30);
     }
 
     private async void OnSaveClicked(object sender, EventArgs e)
@@ -43,22 +42,16 @@ public partial class AddBorrowedPopup : Popup
             return;
         }
 
-        if (dueDatePicker.Date < dateBorrowedPicker.Date)
-        {
-            await Application.Current!.MainPage!.DisplayAlert("Validation", "Repay date must be after borrowed date.", "OK");
-            return;
-        }
-
         Close(new AddBorrowedResult
         {
             PersonName   = name,
-            MobileNumber = mobileEntry.Text?.Trim() ?? "",
-            Relationship = relationshipPicker.SelectedItem?.ToString() ?? "Friend",
+            MobileNumber = "",
+            Relationship = "Friend",
             Amount       = amount,
-            Purpose      = purposeEntry.Text?.Trim() ?? "",
+            Purpose      = "",
             DateBorrowed = dateBorrowedPicker.Date,
-            DueDate      = dueDatePicker.Date,
-            Notes        = notesEntry.Text?.Trim() ?? ""
+            DueDate      = dateBorrowedPicker.Date.AddDays(30),
+            Notes        = ""
         });
     }
 

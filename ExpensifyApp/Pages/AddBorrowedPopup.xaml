@@ -5,139 +5,113 @@
                x:Class="ExpensifyApp.Pages.AddBorrowedPopup"
                CanBeDismissedByTappingOutsideOfPopup="False"
                Color="Transparent"
-               Size="400,680">
+               Size="340,460">
 
-    <Border BackgroundColor="White" StrokeThickness="0" Padding="0" WidthRequest="400">
-        <Border.StrokeShape><RoundRectangle CornerRadius="24"/></Border.StrokeShape>
-        <Border.Shadow><Shadow Brush="#30000000" Offset="0,8" Radius="24"/></Border.Shadow>
+    <Border BackgroundColor="#F7F8FC" StrokeThickness="0" Padding="0" WidthRequest="340">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="22"/>
+        </Border.StrokeShape>
+        <Border.Shadow>
+            <Shadow Brush="#35000000" Offset="0,8" Radius="22"/>
+        </Border.Shadow>
 
-        <Grid RowDefinitions="Auto,*">
 
-            <!-- Header -->
-            <Border Grid.Row="0" StrokeThickness="0" Padding="22,20">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+
+
+            <Border Grid.Row="0" StrokeThickness="0" Padding="18,16">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#7B2FF7" Offset="0.0"/>
-                        <GradientStop Color="#3F1099" Offset="1.0"/>
+                        <GradientStop Color="#0F9F99" Offset="0.0"/>
+                        <GradientStop Color="#086B67" Offset="1.0"/>
                     </LinearGradientBrush>
                 </Border.Background>
-                <Border.StrokeShape><RoundRectangle CornerRadius="24,24,0,0"/></Border.StrokeShape>
-                <VerticalStackLayout Spacing="4">
-                    <Label Text="🤝 Log Borrowed Amount" TextColor="White" FontSize="18" FontAttributes="Bold"/>
-                    <Label Text="Track money you owe to others" TextColor="#C9B5FF" FontSize="12"/>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="22,22,0,0"/>
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="&#x1F91D; Log Borrowed Amount" TextColor="White" FontSize="16" FontAttributes="Bold"/>
+                    <Label Text="Track money you owe to others" TextColor="#B2F2EE" FontSize="11"/>
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Form -->
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="22,18,22,22" Spacing="14">
 
-                    <!-- Person Name -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Person Name *" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                        <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry x:Name="personNameEntry" Placeholder="e.g. Rajan Kumar" PlaceholderColor="#B0B8C1"
-                                   TextColor="#1C2340" FontSize="14" BackgroundColor="Transparent"/>
-                        </Border>
-                    </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" Spacing="5" Padding="18,14,18,0">
+                <Label Text="Person Name *" FontSize="11" FontAttributes="Bold" TextColor="#8A94A6"/>
+                <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB" Padding="12,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="11"/>
+                    </Border.StrokeShape>
+                    <Entry x:Name="personNameEntry"
+                           Placeholder="Enter Name"
+                           PlaceholderColor="#C0C8D4"
+                           TextColor="#1C2340" FontSize="13"
+                           HeightRequest="44"
+                           BackgroundColor="Transparent"/>
+                </Border>
+            </VerticalStackLayout>
 
-                    <!-- Amount -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Amount Borrowed (₹) *" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                        <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry x:Name="amountEntry" Placeholder="e.g. 500" PlaceholderColor="#B0B8C1"
-                                   TextColor="#1C2340" FontSize="14" Keyboard="Numeric" BackgroundColor="Transparent"/>
-                        </Border>
-                    </VerticalStackLayout>
 
-                    <!-- Relationship + Mobile (2-col) -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="Relationship" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="6,2">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Picker x:Name="relationshipPicker" Title="Select" FontSize="13" TextColor="#1C2340">
-                                    <Picker.Items>
-                                        <x:String>Friend</x:String>
-                                        <x:String>Family</x:String>
-                                        <x:String>Colleague</x:String>
-                                        <x:String>Neighbour</x:String>
-                                        <x:String>Other</x:String>
-                                    </Picker.Items>
-                                </Picker>
-                            </Border>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1" Spacing="6">
-                            <Label Text="Mobile (optional)" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,12">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <Entry x:Name="mobileEntry" Placeholder="Phone no." PlaceholderColor="#B0B8C1"
-                                       TextColor="#1C2340" FontSize="13" Keyboard="Telephone" BackgroundColor="Transparent"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
+            <VerticalStackLayout Grid.Row="2" Spacing="5" Padding="18,12,18,0">
+                <Label Text="Amount Borrowed (&#x20B9;) *" FontSize="11" FontAttributes="Bold" TextColor="#8A94A6"/>
+                <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB" Padding="12,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="11"/>
+                    </Border.StrokeShape>
+                    <Entry x:Name="amountEntry"
+                           Placeholder="e.g. 500"
+                           PlaceholderColor="#C0C8D4"
+                           TextColor="#1C2340" FontSize="13"
+                           Keyboard="Numeric"
+                           HeightRequest="44"
+                           BackgroundColor="Transparent"/>
+                </Border>
+            </VerticalStackLayout>
 
-                    <!-- Purpose -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Purpose" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                        <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry x:Name="purposeEntry" Placeholder="e.g. Food, Fuel, Medical…" PlaceholderColor="#B0B8C1"
-                                   TextColor="#1C2340" FontSize="14" BackgroundColor="Transparent"/>
-                        </Border>
-                    </VerticalStackLayout>
 
-                    <!-- Date Borrowed + Due Date (2-col) -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="Date Borrowed" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="6,4">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <DatePicker x:Name="dateBorrowedPicker" Format="dd MMM yyyy"
-                                            TextColor="#1C2340" FontSize="13"/>
-                            </Border>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1" Spacing="6">
-                            <Label Text="Repay By" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                            <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="6,4">
-                                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                                <DatePicker x:Name="dueDatePicker" Format="dd MMM yyyy"
-                                            TextColor="#1C2340" FontSize="13"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
+            <VerticalStackLayout Grid.Row="3" Spacing="5" Padding="18,12,18,0">
+                <Label Text="Date Borrowed *" FontSize="11" FontAttributes="Bold" TextColor="#8A94A6"/>
+                <Border BackgroundColor="White" StrokeThickness="1" Stroke="#E5E7EB" Padding="12,6">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="11"/>
+                    </Border.StrokeShape>
+                    <DatePicker x:Name="dateBorrowedPicker"
+                                Format="dd MMM yyyy"
+                                TextColor="#1C2340"
+                                FontSize="13"
+                                HeightRequest="34"/>
+                </Border>
+            </VerticalStackLayout>
 
-                    <!-- Notes -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Notes (optional)" FontSize="12" FontAttributes="Bold" TextColor="#8A94A6"/>
-                        <Border BackgroundColor="#F8FAFC" StrokeThickness="1" Stroke="#E5E7EB" Padding="14,12">
-                            <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
-                            <Entry x:Name="notesEntry" Placeholder="Any extra notes…" PlaceholderColor="#B0B8C1"
-                                   TextColor="#1C2340" FontSize="14" BackgroundColor="Transparent"/>
-                        </Border>
-                    </VerticalStackLayout>
 
-                    <!-- Action Buttons -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,6,0,0">
-                        <Button Grid.Column="0" Text="Cancel" BackgroundColor="#F0F3F8" TextColor="#8A94A6"
-                                CornerRadius="14" FontSize="14" FontAttributes="Bold"
-                                HeightRequest="50" Clicked="OnCancelClicked"/>
-                        <Button Grid.Column="1" Text="Save Record" TextColor="White"
-                                CornerRadius="14" FontSize="14" FontAttributes="Bold"
-                                HeightRequest="50" Clicked="OnSaveClicked">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                    <GradientStop Color="#7B2FF7" Offset="0.0"/>
-                                    <GradientStop Color="#5B1ACC" Offset="1.0"/>
-                                </LinearGradientBrush>
-                            </Button.Background>
-                        </Button>
-                    </Grid>
+            <BoxView Grid.Row="4" HeightRequest="1" BackgroundColor="#EAECF0" Margin="18,16,18,0"/>
 
-                </VerticalStackLayout>
-            </ScrollView>
+
+            <Grid Grid.Row="5" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="18,12,18,18">
+                <Button Grid.Column="0"
+                        Text="Cancel"
+                        BackgroundColor="#ECEEF3"
+                        TextColor="#8A94A6"
+                        CornerRadius="12"
+                        FontSize="13" FontAttributes="Bold"
+                        HeightRequest="46"
+                        Clicked="OnCancelClicked"/>
+                <Button Grid.Column="1"
+                        Text="Save"
+                        TextColor="White"
+                        CornerRadius="12"
+                        FontSize="13" FontAttributes="Bold"
+                        HeightRequest="46"
+                        Clicked="OnSaveClicked">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#0F9F99" Offset="0.0"/>
+                            <GradientStop Color="#086B67" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </Grid>
+
         </Grid>
     </Border>
 </toolkit:Popup>

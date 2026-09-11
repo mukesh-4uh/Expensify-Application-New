@@ -59,6 +59,23 @@ namespace ExpensifyApp.Pages
                 strategyCommitPctLabel.Text = $"{profile.CommitmentPercentage}%";
                 strategyExpensePctLabel.Text = $"{profile.ExpensePercentage}%";
 
+                // Pre-populate salary card
+                if (profile.MonthlyIncome > 0)
+                    monthlySalaryEntry.Text = profile.MonthlyIncome.ToString();
+                string planKey = profile.SavingsMode?.ToLower() ?? "";
+                int planIdx = planKey switch
+                {
+                    "50/30/20" => 0,
+                    "60/20/20" => 1,
+                    "70/20/10" => 2,
+                    "aggressive" => 3,
+                    "student" => 4,
+                    "custom" => 5,
+                    _ => -1
+                };
+                savingsPlanPicker.SelectedIndex = planIdx;
+                UpdateSalaryPreview();
+
                 // Load Goals
                 var goals = await _db.SavingsGoal.ToListAsync();
                 _totalSavings = goals.Sum(g => g.CurrentAmount);
@@ -478,6 +495,112 @@ namespace ExpensifyApp.Pages
                 {
                     await DisplayAlert("Error", ex.Message, "OK");
                 }
+            }
+        }
+
+        // ─── Monthly Salary & Plan Card Handlers ──────────────────────────────
+
+        private void UpdateSalaryPreview()
+        {
+            if (!int.TryParse(monthlySalaryEntry?.Text?.Trim(), out int salary) || salary <= 0)
+            {
+                if (salaryPreviewBorder != null) salaryPreviewBorder.IsVisible = false;
+                return;
+            }
+
+            int savingsPct = savingsPlanPicker?.SelectedIndex switch
+            {
+                0 => 30,
+                1 => 20,
+                2 => 10,
+                3 => 40,
+                4 => 25,
+                _ => 0
+            };
+
+            if (savingsPct == 0)
+            {
+                if (salaryPreviewBorder != null) salaryPreviewBorder.IsVisible = false;
+                return;
+            }
+
+            int savingsAmt = (int)(salary * savingsPct / 100.0);
+            int spendAmt   = salary - savingsAmt;
+
+            previewSavingsLabel.Text  = $"₹{savingsAmt:N0}";
+            previewSpendLabel.Text    = $"₹{spendAmt:N0}";
+            salaryPreviewBorder.IsVisible = true;
+        }
+
+        private void OnSalaryEntryCompleted(object sender, EventArgs e) => UpdateSalaryPreview();
+
+        private void OnSavingsPlanChanged(object sender, EventArgs e) => UpdateSalaryPreview();
+
+        private async void OnApplySalaryPlanClicked(object sender, EventArgs e)
+        {
+            if (!int.TryParse(monthlySalaryEntry.Text?.Trim(), out int salary) || salary <= 0)
+            {
+                await DisplayAlert("Validation", "Please enter a valid monthly salary.", "OK");
+                return;
+            }
+
+            int planIdx = savingsPlanPicker.SelectedIndex;
+            if (planIdx < 0)
+            {
+                await DisplayAlert("Validation", "Please choose a savings plan.", "OK");
+                return;
+            }
+
+            // Map selection to strategy values
+            (string modeName, int savPct, int comPct, int expPct) = planIdx switch
+            {
+                0 => ("50/30/20", 30, 50, 20),
+                1 => ("60/20/20", 20, 60, 20),
+                2 => ("70/20/10", 10, 70, 20),
+                3 => ("Aggressive", 40, 40, 20),
+                4 => ("Student", 25, 55, 20),
+                _ => ("Custom", 20, 50, 30)
+            };
+
+            try
+            {
+                var profile = await _db.UserFinancialProfile.FirstOrDefaultAsync();
+                if (profile != null)
+                {
+                    profile.MonthlyIncome         = salary;
+                    profile.SavingsMode           = modeName;
+                    profile.SavingsPercentage     = savPct;
+                    profile.CommitmentPercentage  = comPct;
+                    profile.ExpensePercentage     = expPct;
+                    _db.UserFinancialProfile.Update(profile);
+                }
+                else
+                {
+                    _db.UserFinancialProfile.Add(new UserFinancialProfile
+                    {
+                        MonthlyIncome        = salary,
+                        SavingsMode          = modeName,
+                        SavingsPercentage    = savPct,
+                        CommitmentPercentage = comPct,
+                        ExpensePercentage    = expPct
+                    });
+                }
+
+                // Also sync the BudgetTable amount
+                var budgetRecord = await _db.BudgetTable.FirstOrDefaultAsync();
+                if (budgetRecord != null)
+                {
+                    budgetRecord.Amount = salary;
+                    _db.BudgetTable.Update(budgetRecord);
+                }
+
+                await _db.SaveChangesAsync();
+                await UIHelper.ShowToastMessage($"✅ Plan applied! Saving ₹{(int)(salary * savPct / 100.0):N0}/month");
+                await LoadSavingsData();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
